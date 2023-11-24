@@ -32,11 +32,12 @@
                 <tr>
                     <th scope="col">Продукт</th>
                     <th scope="col">Кількість</th>
-                    <th scope="col">Алреса</th>
+                    <th scope="col">Адреса</th>
                     <th scope="col">Дата замовлення</th>
                     <th scope="col">Сума до сплати</th>
                     <th scope="col">Коментар</th>
                     <th scope="col">Метод оплати</th>
+                    <th scope="col">Кур'єр</th>
                     <th scope="col">Статус</th>
                     <th scope="col">Скасувати</th>
                     <!-- Додайте інші заголовки за необхідності -->
@@ -55,6 +56,7 @@
                             <td>@order.TotalAmount</td>
                             <td>@order.Notes</td>
                             <td>@order.PaymentMethod</td>
+                            <td>@order.Courier</td>
                             <td>@order.Status</td>
                             @if (order.Status == "New" || order.Status == "InProcess")
                             {

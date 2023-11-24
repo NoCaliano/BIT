@@ -46,6 +46,7 @@ namespace BIT.Controllers
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
 
+            
             if (dish != null)
             {
                 string userId = null;
@@ -73,6 +74,7 @@ namespace BIT.Controllers
                     ProductName = dish.Name,
                     Category = dish.Category,
                     Status = "New",
+                    Courier = GetReadyToWorkCourierNames()[0],
                 };
 
 
@@ -84,6 +86,18 @@ namespace BIT.Controllers
                 // Обробка випадку, коли страва не знайдена
                 return RedirectToAction("Dashboard", "Admin");
             }
+        }
+
+
+        public List<string> GetReadyToWorkCourierNames()
+        {
+            // Фільтруємо кур'єрів за умовою ReadyToWork == true і вибираємо їх імена
+            var readyToWorkCouriers = _context.Couriers
+                .Where(c => c.ReadyToWork == true)
+                .Select(c => c.Name)
+                .ToList();
+
+            return readyToWorkCouriers;
         }
     }
 }

@@ -32,6 +32,7 @@
                     <th scope="col">Продукт</th>
                     <th scope="col">Дата замовлення</th>
                     <th scope="col">Метод оплати</th>
+                    <th scope="col">Кур'єр</th>
                     <!-- Додайте інші заголовки за необхідності -->
                 </tr>
             </thead>
@@ -44,6 +45,7 @@
                             <td>@order.ProductName</td>
                             <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                             <td>@order.PaymentMethod</td>
+                            <td>@order.Courier</td>
                             <!-- Додайте інші комірки з даними за необхідності -->
                         </tr>
                     }
