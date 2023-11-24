@@ -31,8 +31,14 @@
             <thead>
                 <tr>
                     <th scope="col">Продукт</th>
+                    <th scope="col">Кількість</th>
+                    <th scope="col">Алреса</th>
                     <th scope="col">Дата замовлення</th>
+                    <th scope="col">Сума до сплати</th>
+                    <th scope="col">Коментар</th>
                     <th scope="col">Метод оплати</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Скасувати</th>
                     <!-- Додайте інші заголовки за необхідності -->
                 </tr>
             </thead>
@@ -43,12 +49,26 @@
                     {
                         <tr>
                             <td>@order.ProductName</td>
-                            <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>@order.Quanity</td>
+                            <td>@order.ShippingAddress</td>
+                            <td>@order.OrderDate</td>
+                            <td>@order.TotalAmount</td>
+                            <td>@order.Notes</td>
                             <td>@order.PaymentMethod</td>
-                            <!-- Додайте інші комірки з даними за необхідності -->
+                            <td>@order.Status</td>
+                            @if (order.Status == "New" || order.Status == "InProcess")
+                            {
+                                <td>
+                                    <form method="post" action="/Account/CancelOrder">
+                                        <input type="hidden" name="ordId" value="@order.Id" />
+                                        <button type="submit" class="btn btn-success">Скасувати</button>
+                                    </form>
+                                </td>
+                            }
                         </tr>
                     }
                 }
+
             </tbody>
         </table>
     </div>

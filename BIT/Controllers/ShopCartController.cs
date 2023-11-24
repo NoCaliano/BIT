@@ -1,5 +1,7 @@
-﻿using BIT.DataStuff;
+﻿using BIT.Areas.Identity.Data;
+using BIT.DataStuff;
 using BIT.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -10,11 +12,12 @@ namespace BIT.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
-
-        public ShopCartController(ILogger<HomeController> logger, AppDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ShopCartController(ILogger<HomeController> logger, AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public IActionResult AddToListOfCartItems(int dishId)
@@ -68,6 +71,7 @@ namespace BIT.Controllers
                     {
                         Order order = new Order()
                         {
+                            UserId = _userManager.GetUserId(User),
                             Quanity = dish.Quantity,
                             Product = new List<Dish> { dish.Dish },
                             Category = dish.Dish.Category,

@@ -14,7 +14,22 @@ namespace BIT.Controllers
             _context = context;
         }
 
-        public IActionResult MyOrders() { return View(); }  
+        public IActionResult MyOrders() { return View(); }
 
+
+        [HttpPost]
+        public async Task<IActionResult> CancelOrder(int ordId)
+        {
+            var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
+
+            if (ord != null)
+            {
+                ord.Status = "Cancelled";
+                await _context.SaveChangesAsync();
+                return RedirectToAction("MyOrders", "Account");
+            }
+
+            return NotFound();
+        }
     }
 }
