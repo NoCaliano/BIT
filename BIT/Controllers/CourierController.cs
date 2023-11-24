@@ -1,5 +1,6 @@
 ﻿using BIT.Areas.Identity.Data;
 using BIT.DataStuff;
+using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -43,9 +44,16 @@ namespace BIT.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnWork(string CouId, bool ans)
+        public async Task<IActionResult> OnWork(string CourUserId)
         {
-            
+            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == CourUserId);
+
+            if (cour != null)
+            {
+                cour.ReadyToWork = true;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Courier");
+            }
 
             return NotFound();
         }

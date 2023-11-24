@@ -1,5 +1,9 @@
 ﻿@using BIT.DataStuff
 @using BIT.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using BIT.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @inject IAllOrders OrderBase
 @inject IAllCouriers CourBase
 
@@ -71,3 +75,16 @@
         }
     </tbody>
 </table>
+
+@foreach (var cour in CourBase.Couriers)
+{
+    if (cour.UserId == UserManager.GetUserId(User))
+    {
+        <h3> Готові працювати? @cour.ReadyToWork</h3>
+    }
+
+}
+<form method="post" action="/Courier/OnWork">
+    <input type="hidden" name="CourUserId" value="@UserManager.GetUserId(User)" />
+    <button type="submit" class="btn btn-success">Вийти на роботу</button>
+</form>
