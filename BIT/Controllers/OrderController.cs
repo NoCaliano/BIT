@@ -88,7 +88,6 @@ namespace BIT.Controllers
             }
         }
 
-
         public List<string> GetReadyToWorkCourierNames()
         {
             // Фільтруємо кур'єрів за умовою ReadyToWork == true і вибираємо їх імена
@@ -99,5 +98,6 @@ namespace BIT.Controllers
 
             return readyToWorkCouriers;
         }
+
     }
 }
