@@ -1,0 +1,55 @@
+﻿@using BIT.DataStuff
+@using BIT.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using BIT.Areas.Identity.Data
+
+@inject IAllOrders OrderBase
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<style>
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table th, .table td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Останні замовлення</h1>
+    <p>Дізнайтеся більше про <a href="https://docs.microsoft.com/aspnet/core">створення веб-додатків з ASP.NET Core</a>.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Продукт</th>
+                    <th scope="col">Дата замовлення</th>
+                    <th scope="col">Метод оплати</th>
+                    <!-- Додайте інші заголовки за необхідності -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in OrderBase.Orders)
+                {
+                    if (order.UserId == UserManager.GetUserId(User))
+                    {
+                        <tr>
+                            <td>@order.ProductName</td>
+                            <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                            <td>@order.PaymentMethod</td>
+                            <!-- Додайте інші комірки з даними за необхідності -->
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
