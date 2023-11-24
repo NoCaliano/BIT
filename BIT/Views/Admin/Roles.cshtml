@@ -1,0 +1,40 @@
+﻿@using BIT.Data
+@using BIT.Interfaces
+@inject IAllRoles RoleBase
+@{
+    Layout = "_LayoutAdmin";
+}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in RoleBase.Roles)
+        {
+            <tr>
+                <td>@role.Id</td>
+                <td>@role.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-action="AddRole">
+    <input asp-action=""></input>
+</form>

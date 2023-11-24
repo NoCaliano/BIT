@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/site.css">
+    <title>@ViewBag.Title</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .sidebar li {
+                margin-bottom: 10px;
+            }
+
+            .sidebar a {
+                text-decoration: none;
+                color: #fff;
+            }
+
+                .sidebar a:hover {
+                    color: #ffd700;
+                }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .expandable {
+            cursor: pointer;
+        }
+
+        .sub-menu,
+        .sub-menu2,
+        .sub-menu3,
+        .sub-menu4{
+            display: none;
+            list-style: none;
+            padding-left: 15px;
+        }
+
+            .sub-menu a,
+            .sub-menu2 a,
+            .sub-menu3 a,
+            .sub-menu4 a{
+                color: #ccc;
+                text-decoration: none;
+            }
+
+                .sub-menu a:hover,
+                .sub-menu2 a:hover,
+                .sub-menu3 a:hover,
+                .sub-menu4 a:hover{
+                    color: #ffd700;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li class="expandable" id="products">
+                    Товари
+                    <ul class="sub-menu">
+                        <li><a href="@Url.Action("AddNewDish", "Admin")">Додати товар</a></li>
+                        <li><a href="@Url.Action("DeleteDish", "Admin")">Видалити товари</a></li>
+                        <li><a href="@Url.Action("AddCategory", "Admin")">Додати категорію</a></li>
+                    </ul>
+                </li>
+                <li class="expandable" id="users">
+                    Користувачі
+                    <ul class="sub-menu2">
+                        <li><a href="@Url.Action("Users", "Admin")">Зареєстровані користувачі</a></li>
+                        <li><a href="@Url.Action("Roles", "Admin")">Рівні доступу(Ролі)</a></li>
+                    </ul>
+                </li>
+                <li class="expandable" id="orders">
+                    Замовлення
+                    <ul class="sub-menu3">
+                        <li><a href="@Url.Action("Orders", "Admin")">Останні замовлення</a></li>
+                    </ul>
+                </li>
+                <li class="expandable" id="couriers">
+                    Кур'єри
+                    <ul class="sub-menu4">
+                        <li><a href="@Url.Action("Couriers", "Admin")">Всі кур'єри</a></li>
+                        <li><a href="@Url.Action("Requisitions", "Admin")">Заявки на роботу</a></li>
+                    </ul>
+                </li>
+
+
+            </ul>
+        </div>
+
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var products = document.getElementById('products');
+            var users = document.getElementById('users');
+            var orders = document.getElementById('orders');
+            var couriers = document.getElementById('couriers'); // New line
+            var subMenu = products.querySelector('.sub-menu');
+            var subMenu2 = users.querySelector('.sub-menu2');
+            var subMenu3 = orders.querySelector('.sub-menu3');
+            var subMenu4 = couriers.querySelector('.sub-menu4'); // New line
+
+            products.addEventListener('click', function (event) {
+                if (event.target !== products) {
+                    return;
+                }
+                subMenu.style.display = subMenu.style.display === 'none' ? 'block' : 'none';
+            });
+
+            users.addEventListener('click', function (event) {
+                if (event.target !== users) {
+                    return;
+                }
+                subMenu2.style.display = subMenu2.style.display === 'none' ? 'block' : 'none';
+            });
+
+            orders.addEventListener('click', function (event) {
+                if (event.target !== orders) {
+                    return;
+                }
+                subMenu3.style.display = subMenu3.style.display === 'none' ? 'block' : 'none';
+            });
+
+            couriers.addEventListener('click', function (event) {
+                if (event.target !== couriers) {
+                    return;
+                }
+                subMenu4.style.display = subMenu4.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+

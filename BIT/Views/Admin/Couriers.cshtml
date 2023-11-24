@@ -1,0 +1,84 @@
+﻿@using BIT.DataStuff;
+@using BIT.Interfaces;
+@inject IAllCouriers CouBase;
+@model Courier;
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* Adjust the margin as needed */
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .update-salary-form,
+    .pay-salary-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 10px;
+    }
+
+    .form-label {
+        margin-bottom: 5px;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Vehicle Type</th>
+            <th>Last Salary</th>
+            <th>Salary</th>
+            <th>Ready To Work</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cour in CouBase.Couriers)
+        {
+            <tr>
+                <td>@cour.Id</td>
+                <td>@cour.UserId</td>
+                <td>@cour.Name</td>
+                <td>@cour.Email</td>
+                <td>@cour.PhoneNumber</td>
+                <td>@cour.VehicleType</td>
+                <td>@cour.LastSalary</td>
+                <td>@cour.Salary</td>
+                <td>@cour.ReadyToWork</td>
+                <td>
+                    <form class="update-salary-form" method="post" action="/Admin/SetSalary">
+                        <input type="hidden" name="couId" value="@cour.Id" />
+                        <label class="form-label" for="salaryInput">Enter Salary:</label>
+                        <input type="number" name="Salary" id="salaryInput" required />
+                        <button type="submit" class="btn btn-success">Set Salary</button>
+                    </form>
+                </td>
+                <td>
+                    <form class="pay-salary-form" method="post" action="/Admin/PaySalary" onsubmit="return confirm('Ви впевнені, що хочете виплатити зарплату?');">
+                        <input type="hidden" name="couId" value="@cour.Id" />
+                        <button type="submit" class="btn btn-info">Pay Salary</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

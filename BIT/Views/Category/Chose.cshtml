@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Chose";
+}
+
+<style>
+    .category-images {
+        display: flex;
+        flex-wrap: wrap; /* Allow flex items to wrap to the next line */
+        justify-content: space-around;
+        align-items: center;
+    }
+
+        .category-images a {
+            max-width: 150px; /* Adjust the maximum width as needed */
+            width: 45%; /* Set the width to occupy 45% of the container */
+            margin: 10px; /* Add some margin around each image */
+            text-align: center; /* Center the image within the container */
+            transition: transform 0.3s; /* Add a transition effect */
+        }
+
+            .category-images a:hover {
+                transform: scale(1.1); /* Increase the size on hover */
+            }
+</style>
+
+<h2>Choose a Category</h2>
+
+<div class="category-images">
+    <a href="@Url.Action("Donuts", "Category")">
+        <img src="~/img/к4.jpg" alt="Donuts">
+    </a>
+    <a href="@Url.Action("Cakes", "Category")">
+        <img src="~/img/к1.jpg" alt="Cakes">
+    </a>
+    <a href="@Url.Action("Pizza", "Category")">
+        <img src="~/img/к3.jpg" alt="Pizza">
+    </a>
+    <a href="@Url.Action("Sushi", "Category")">
+        <img src="~/img/к2.jpg" alt="Sushi">
+    </a>
+</div>

@@ -1,0 +1,69 @@
+﻿@using BIT.DataStuff
+@using BIT.Interfaces
+@inject IAllRequisitions ReqBase
+@model Requisition
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>User Id</th>
+            <th>Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Vehicle Type</th>
+            <th>Accepted</th>
+            <th>Зробити кладменом</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var req in ReqBase.Requisitions)
+        {
+
+            <tr>
+
+                <td>@req.Id</td>
+                <td>@req.UserId</td>
+                <td>@req.Name</td>
+                <td>@req.LastName</td>
+                <td>@req.PhoneNumber</td>
+                <td>@req.Address</td>
+                <td>@req.VehicleType</td>
+                <td>@req.Accepted</td>
+                @if (req.Accepted != true)
+                {
+                    <td>
+                        <form method="post" action="/Admin/UpdateRequisitionStatus">
+                            <input type="hidden" name="reqId" value="@req.Id" />
+                            <button type="submit" class="btn btn-success">Зробити</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+
+        }
+    </tbody>
+</table>

@@ -1,0 +1,73 @@
+﻿@using BIT.DataStuff
+@using BIT.Interfaces
+@inject IAllOrders OrderBase
+@inject IAllCouriers CourBase
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Страва</th>
+            <th>Кількість</th>
+            <th>Клієнт</th>
+            <th>Номер телефону</th>
+            <th>Адреса</th>
+            <th>Категорія</th>
+            <th>Дата</th>
+            <th>Сума</th>
+            <th>Коментар</th>
+            <th>Спосіб оплати</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in OrderBase.Orders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.ProductName</td>
+                <td>@order.Quanity</td>
+                <td>@order.CustomerName</td>
+                <td>@order.Phonenumber</td>
+                <td>@order.ShippingAddress</td>
+                <td>@order.Category</td>
+                <td>@order.OrderDate</td>
+                <td>@order.TotalAmount</td>
+                <td>@order.Notes</td>
+                <td>@order.PaymentMethod</td>
+                <td>@order.Status</td>
+                @if (order.Status == "New")
+                {
+                    <td>
+                        <form method="post" action="/Courier/UpdateStatus">
+                            <input type="hidden" name="ordId" value="@order.Id" />
+                            <select name="newStatus">
+                                <option value="InProcess">In Process</option>
+                                <option value="Delivered">Delivered</option>
+                                <!-- Додайте інші статуси за потреби -->
+                            </select>
+                            <button type="submit" class="btn btn-success">Зробити</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

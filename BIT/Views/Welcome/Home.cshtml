@@ -1,0 +1,200 @@
+﻿@if (User.IsInRole("Admin"))
+{
+    <h2>Статус: Адмін</h2>
+}
+@if (User.IsInRole("User"))
+{
+    <h2>Статус: Юзер</h2>
+}
+
+@if (User.IsInRole("Courier"))
+{
+    <h2>Статус: Кур'єр</h2>
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="header.css">
+    <title>Служба доставки їжі</title>
+</head>
+<style>
+
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #333;
+        color: #fff;
+        padding: 20px; /* Збільшено padding для кращого вигляду */
+        text-align: center;
+    }
+
+    footer {
+        background-color: #333;
+        color: #fff;
+        padding: 20px; /* Збільшено padding для кращого вигляду */
+        text-align: center;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-around;
+    }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            padding: 20px; /* Збільшено padding для кращого вигляду */
+            transition: color 0.3s ease;
+        }
+
+            nav a:hover {
+                color: #ff6347;
+            }
+
+    section {
+        padding: 40px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+        background-color: #f9f9f9; /* Додано фон для розділів */
+        border-radius: 5px; /* Додано закруглення країв */
+        margin-bottom: 20px; /* Додано відступ між розділами */
+    }
+
+    h1 {
+        text-align: center;
+    }
+    /* Анімація для заголовків */
+    h1, h2 {
+        color: #333;
+        font-weight: bold;
+        font-size: 2em;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+    }
+
+        h1:hover, h2:hover {
+            color: #ff6347;
+        }
+
+    /* Стилі для лінків */
+    a {
+        text-decoration: none;
+        color: #333;
+        transition: color 0.3s ease;
+    }
+
+        a:hover {
+            color: #ff6347;
+        }
+
+    /* Анімація для зображення відгуків клієнтів */
+    img {
+        max-width: 100%;
+        border-radius: 15%;
+        transition: transform 0.3s ease;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+        img:hover {
+            transform: scale(0.8);
+            transition: transform 0.3s ease-in-out;
+        }
+
+
+    /* Анімація для розділів */
+    section.animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+<body>
+
+    <div id="header-container"></div>
+
+    <!-- Область контенту головної сторінки -->
+    <section class="welcome-section animate">
+        <h1>Ласкаво просимо до нашої служби доставки їжі Food Delivery!</h1>
+        <p>Смачна та якісна їжа завжди на відстані кліку від вас! Ми прагнемо зробити ваші щоденні обіди та вечері простішими та смачнішими.</p>
+        <img src="1.jpg" alt="Ласкаво просимо">
+    </section>
+
+    <section class="services-section animate">
+        <h2>Пропозиція послуг</h2>
+        <p>Замовте їжу онлайн за кілька кліків! Наша служба доставки пропонує широкий вибір страв від найкращих ресторанів у вашому місті. Швидка доставка та регулярні акції роблять нас ідеальним вибором для вашого голоду. Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate, unde magnam. Nostrum suscipit, est illo, id eveniet distinctio voluptatum aspernatur laudantium nam molestias accusantium atque minima delectus consequuntur! Nihil, suscipit? Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus labore consequuntur illum vel! Quas quis nobis minima mollitia esse repellat. Nobis dicta earum recusandae assumenda? Earum vel accusantium aspernatur molestias?</p>
+        <img src="3.jpg" alt="Пропозиція послуг">
+    </section>
+
+    <section class="order-section animate">
+        <h2>Замовлення</h2>
+        <p>Не треба готувати, просто замовте! Зробити замовлення легко: оберіть ресторан, додайте страви до кошика та оберіть зручний час доставки. Завітайте на наш сайт і насолоджуйтеся смачною їжею у найкоротший термін. Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos quo iure repellendus nostrum ullam libero laudantium dolorem minima sapiente? Doloremque voluptas eos consequatur molestiae cumque voluptates consequuntur fugiat adipisci. Saepe? Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat perferendis neque ut labore dolor fugiat cumque ab qui optio. Deleniti ut quibusdam voluptatibus quia saepe quas inventore dolore consequatur eaque!</p>
+        <a href="#menu">Переглянути меню</a>
+        <img src="4.jpg" alt="Замовлення">
+    </section>
+
+    <section class="reviews-section animate">
+        <h2>Відгуки клієнтів</h2>
+        <p>Спробуйте і переконайтеся! Наші клієнти залишають теплі відгуки про якість обслуговування та неперевершений смак страв. Приєднуйтесь до тих, хто вже смакував наші страви!</p>
+        <img src="2.jpg" alt="Відгук клієнта">
+    </section>
+
+    <section class="contact-section animate">
+        <h2>Контактна інформація</h2>
+        <p>Маєте питання чи побажання? Звертайтеся до нас за телефоном <a href="tel:+(380) 95 873 54 12.">+(380) 95 873 54 12.</a> або електронною поштою <a href="mailto:info@example.com">info@example.com</a>. Ми завжди готові вам допомогти! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus quia soluta deserunt vel doloribus ullam veritatis quas! Nihil, perferendis. Tenetur nulla voluptatem, alias assumenda esse est ut provident dolores obcaecati?</p>
+    </section>
+
+    <div id="footer-container"></div>
+
+    <script>
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+            });
+
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+            });
+    </script>
+
+    <script>
+        const sections = document.querySelectorAll('.animate');
+
+        function checkInView() {
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const sectionBottom = section.getBoundingClientRect().bottom;
+
+                const isPartiallyVisible = sectionTop < window.innerHeight && sectionBottom >= 0;
+
+                if (isPartiallyVisible) {
+                    section.classList.add('in-view');
+                }
+            });
+        }
+
+        window.addEventListener('load', checkInView);
+        window.addEventListener('scroll', checkInView);
+    </script>
+
+</body>
+
+</html>

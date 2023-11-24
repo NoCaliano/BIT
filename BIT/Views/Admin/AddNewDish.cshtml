@@ -1,0 +1,62 @@
+﻿@model BIT.Models.Dish
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<form asp-action="AddNewDish" method="post" class="dish-form">
+    <div class="form-group">
+        <label asp-for="Name">Назва:</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price">Ціна:</label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description">Опис:</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Img">URL Зображення:</label>
+        <input asp-for="Img" class="form-control" />
+        <span asp-validation-for="Img" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsFavorite">Улюблений:</label>
+        <input asp-for="IsFavorite" type="checkbox" class="form-check-input" />
+        <span asp-validation-for="IsFavorite" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsAvaileble">Доступний:</label>
+        <input asp-for="IsAvaileble" type="checkbox" class="form-check-input" />
+        <span asp-validation-for="IsAvaileble" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Calories">Калорії:</label>
+        <input asp-for="Calories" class="form-control" />
+        <span asp-validation-for="Calories" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Category">Категорія:</label>
+        @{
+            var categories = ViewData["categories"] as SelectList;
+        }
+        <select asp-for="Category" asp-items="categories" class="form-control">
+            <option value="">Виберіть категорію</option>
+        </select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Додати</button>
+</form>
