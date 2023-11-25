@@ -62,7 +62,7 @@ namespace BIT.Controllers
                     customerName = User.Identity.Name;
 
                 }
-
+               
                 Order newOrder = new Order
                 {
                     UserId = userId,
@@ -76,7 +76,6 @@ namespace BIT.Controllers
                     Status = "New",
                     Courier = GetReadyToWorkCourierNames()[0],
                 };
-
 
                 return View("Order", newOrder);
             }

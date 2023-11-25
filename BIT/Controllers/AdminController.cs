@@ -29,6 +29,11 @@ namespace BIT.Controllers
             return View("~/Views/Admin/Dashboard.cshtml");
         }
 
+        public IActionResult Charts()
+        {
+            return View();
+        }
+
         public IActionResult Users()
         {
             return View();
@@ -135,11 +140,6 @@ namespace BIT.Controllers
                 // Помилка при додаванні ролі, обробити відповідно
                 return View("Error");
             }
-        }
-
-        public IActionResult SalesLast7Days()
-        {
-            return View();
         }
 
         public IActionResult Requisitions()

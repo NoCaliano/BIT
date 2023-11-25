@@ -58,7 +58,8 @@
         .sub-menu,
         .sub-menu2,
         .sub-menu3,
-        .sub-menu4{
+        .sub-menu4,
+        .sub-menu5 {
             display: none;
             list-style: none;
             padding-left: 15px;
@@ -67,7 +68,8 @@
             .sub-menu a,
             .sub-menu2 a,
             .sub-menu3 a,
-            .sub-menu4 a{
+            .sub-menu4 a,
+            .sub-menu5 a {
                 color: #ccc;
                 text-decoration: none;
             }
@@ -75,7 +77,8 @@
                 .sub-menu a:hover,
                 .sub-menu2 a:hover,
                 .sub-menu3 a:hover,
-                .sub-menu4 a:hover{
+                .sub-menu4 a:hover
+                .sub-menu5 a:hover {
                     color: #ffd700;
                 }
     </style>
@@ -112,6 +115,12 @@
                         <li><a href="@Url.Action("Requisitions", "Admin")">Заявки на роботу</a></li>
                     </ul>
                 </li>
+                <li class="expandable" id="charts">
+                    Графіки
+                    <ul class="sub-menu5">
+                        <li><a href="@Url.Action("Charts", "Admin")">Деякі дані</a></li>                       
+                    </ul>
+                </li>
 
 
             </ul>
@@ -128,10 +137,12 @@
             var users = document.getElementById('users');
             var orders = document.getElementById('orders');
             var couriers = document.getElementById('couriers'); // New line
+            var charts = document.getElementById('charts'); // New line
             var subMenu = products.querySelector('.sub-menu');
             var subMenu2 = users.querySelector('.sub-menu2');
             var subMenu3 = orders.querySelector('.sub-menu3');
             var subMenu4 = couriers.querySelector('.sub-menu4'); // New line
+            var subMenu5 = charts.querySelector('.sub-menu5'); // New line
 
             products.addEventListener('click', function (event) {
                 if (event.target !== products) {
@@ -159,6 +170,13 @@
                     return;
                 }
                 subMenu4.style.display = subMenu4.style.display === 'none' ? 'block' : 'none';
+            });
+
+            charts.addEventListener('click', function (event) {
+                if (event.target !== charts) {
+                    return;
+                }
+                subMenu5.style.display = subMenu5.style.display === 'none' ? 'block' : 'none';
             });
         });
     </script>
