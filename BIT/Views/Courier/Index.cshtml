@@ -7,6 +7,9 @@
 @inject IAllOrders OrderBase
 @inject IAllCouriers CourBase
 
+@{
+    string name = null;
+}
 <style>
     table {
         border-collapse: collapse;
@@ -23,6 +26,15 @@
         background-color: #f2f2f2;
     }
 </style>
+
+@foreach (var cour in CourBase.Couriers)
+{
+    if (cour.UserId == UserManager.GetUserId(User))
+    {
+        name = cour.Name;
+        <h3> Готові працювати? @cour.ReadyToWork</h3>
+    }
+}
 
 <table>
     <thead>
@@ -44,47 +56,51 @@
     <tbody>
         @foreach (var order in OrderBase.Orders)
         {
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.ProductName</td>
-                <td>@order.Quanity</td>
-                <td>@order.CustomerName</td>
-                <td>@order.Phonenumber</td>
-                <td>@order.ShippingAddress</td>
-                <td>@order.Category</td>
-                <td>@order.OrderDate</td>
-                <td>@order.TotalAmount</td>
-                <td>@order.Notes</td>
-                <td>@order.PaymentMethod</td>
-                <td>@order.Status</td>
-                @if (order.Status == "New")
-                {
-                    <td>
-                        <form method="post" action="/Courier/UpdateStatus">
-                            <input type="hidden" name="ordId" value="@order.Id" />
-                            <select name="newStatus">
-                                <option value="InProcess">In Process</option>
-                                <option value="Delivered">Delivered</option>
-                                <!-- Додайте інші статуси за потреби -->
-                            </select>
-                            <button type="submit" class="btn btn-success">Зробити</button>
-                        </form>
-                    </td>
-                }
-            </tr>
+            if (order.Courier == name)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.ProductName</td>
+                    <td>@order.Quanity</td>
+                    <td>@order.CustomerName</td>
+                    <td>@order.Phonenumber</td>
+                    <td>@order.ShippingAddress</td>
+                    <td>@order.Category</td>
+                    <td>@order.OrderDate</td>
+                    <td>@order.TotalAmount</td>
+                    <td>@order.Notes</td>
+                    <td>@order.PaymentMethod</td>
+                    <td>@order.Status</td>
+                    @if (order.Status == "New")
+                    {
+                        <td>
+                            <form method="post" action="/Courier/UpdateStatus">
+                                <input type="hidden" name="ordId" value="@order.Id" />
+                                <select name="newStatus">
+                                    <option value="InProcess">In Process</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <!-- Додайте інші статуси за потреби -->
+                                </select>
+                                <button type="submit" class="btn btn-success">Зробити</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" action="/Courier/TakeOrder">
+                                <input type="hidden" name="ordId" value="@order.Id" />
+                                <button type="submit" class="btn btn-success">Відхилити замовлення</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
         }
     </tbody>
 </table>
 
-@foreach (var cour in CourBase.Couriers)
+@if (User.IsInRole("Courier"))
 {
-    if (cour.UserId == UserManager.GetUserId(User))
-    {
-        <h3> Готові працювати? @cour.ReadyToWork</h3>
-    }
-
-}
-<form method="post" action="/Courier/OnWork">
+    <form method="post" action="/Courier/OnWork">
     <input type="hidden" name="CourUserId" value="@UserManager.GetUserId(User)" />
     <button type="submit" class="btn btn-success">Вийти на роботу</button>
 </form>
+}

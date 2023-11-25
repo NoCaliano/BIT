@@ -58,5 +58,19 @@ namespace BIT.Controllers
             return NotFound();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> TakeOrder(int ordId)
+        {
+            var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
+
+            if (ord != null)
+            {
+                ord.Courier = null;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Courier");
+            }
+
+            return NotFound();
+        }
     }
 }
