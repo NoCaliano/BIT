@@ -1,5 +1,7 @@
-﻿using BIT.Models;
+﻿using BIT.DataStuff;
+using BIT.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace BIT.Controllers
@@ -7,11 +9,13 @@ namespace BIT.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
         private static readonly Cart cart = new Cart();
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -22,6 +26,17 @@ namespace BIT.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+
+        public IActionResult Details(int id)
+        {
+            var dish = _context.Dishes.FirstOrDefault(d => d.Id == id);
+            if (dish == null)
+            {
+                return NotFound(); 
+            }
+            return View(dish);
         }
 
         public string GenerateRandomCategory()

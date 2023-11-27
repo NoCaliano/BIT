@@ -1,0 +1,126 @@
+﻿@model BIT.Models.Dish
+
+<div class="dish-details">
+    <h2>@Model.Name</h2>
+    <img src="@Model.Img" alt="@Model.Name" class="dish-image" />
+    <p class="description">@Model.Description</p>
+    <p class="price">Ціна: @Model.Price</p>
+    <p class="calories">Калоріність: @Model.Calories / 100g</p>
+    <p class="favorite">Улюблене: @Model.IsFavorite</p>
+    <p class="available">Доступно: @Model.IsAvaileble</p>
+
+    <div class="actions">
+        <a href="/Order/Order?dishId=@Model.Id" class="btn btn-primary">Замовити</a>
+
+        <form method="post" action="/ShopCart/AddToListOfCartItems" class="add-to-cart-form">
+            <input type="hidden" name="dishId" value="@Model.Id" />
+            <button type="submit" class="btn btn-success">Додати в корзину</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .dish-details {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .dish-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    .description {
+        font-style: italic;
+        color: #555;
+    }
+
+    .price, .calories, .favorite, .available {
+        margin: 5px 0;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: 1px solid #007bff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: 1px solid #28a745;
+    }
+
+
+    #cartContainer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
+        overflow-y: auto; /* Включити прокрутку при необхідності */
+        width: 300px; /* Задайте ширину відповідно до ваших потреб */
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: none; /* По замовчуванню ховаємо контейнер */
+    }
+
+
+</style>
+
+
+<div id="cartContainer">
+    <!-- Вміст часткового представлення корзини буде тут -->
+</div>
+</div>
+<button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var cartContainer = $('#cartContainer');
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (partialView) {
+                    cartContainer.html(partialView);
+                }
+            });
+        });
+
+        // Обробник події для кнопки "Моя корзина"
+        $("#showCartBtn").click(function () {
+            cartContainer.toggle(); // Перемикає відображення/приховування
+            if (cartContainer.is(':visible')) {
+                // Якщо відображено, вивести часткове представлення
+                $.ajax({
+                    url: '/ShopCart/PartCart', // Замініть 'ControllerName' на ваш реальний контролер
+                    type: 'GET',
+                    success: function (partialView) {
+                        cartContainer.html(partialView);
+                    }
+                });
+            }
+        });
+    });
+</script>
