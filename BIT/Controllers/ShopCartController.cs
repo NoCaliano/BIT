@@ -196,7 +196,6 @@ namespace BIT.Controllers
             return PartialView("_MyCart", cart);
         }
 
-
         public IActionResult IncreaseQuantity(int dishId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -220,6 +219,29 @@ namespace BIT.Controllers
             return PartialView("_MyCart", cart);
         }
 
+        public IActionResult CleanSubject(int dishId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Cart cart = _context.Carts.Include(c => c.CartItems)
+                                     .ThenInclude(ci => ci.Dish)
+                                     .FirstOrDefault(c => c.UserId == userId);
+
+            if (cart != null)
+            {
+                var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Dish.Id == dishId);
+
+                if (cartItem != null)
+                {                   
+                    cart.CartItems.Remove(cartItem);                        
+                    cart.GrandTotal = cart.CartItems.Sum(ci => ci.Quantity * ci.Dish.Price);                        
+                    _context.SaveChanges();
+                    
+                }
+            }
+
+            return PartialView("_MyCart", cart);
+        }
 
 
         public IActionResult PartCart()
