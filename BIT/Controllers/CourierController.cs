@@ -58,6 +58,22 @@ namespace BIT.Controllers
             return NotFound();
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> EndWork(string CourUserId)
+        {
+            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == CourUserId);
+
+            if (cour != null)
+            {
+                cour.ReadyToWork = false;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Courier");
+            }
+
+            return NotFound();
+        }
+
         [HttpPost]
         public async Task<IActionResult> TakeOrder(int ordId)
         {
@@ -65,12 +81,23 @@ namespace BIT.Controllers
 
             if (ord != null)
             {
-                ord.Courier = null;
+                ord.Courier = GetReadyToWorkCourierNames().Last();
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Courier");
             }
 
             return NotFound();
+        }
+
+        public List<string> GetReadyToWorkCourierNames()
+        {
+            // Фільтруємо кур'єрів за умовою ReadyToWork == true і вибираємо їх імена
+            var readyToWorkCouriers = _context.Couriers
+                .Where(c => c.ReadyToWork == true)
+                .Select(c => c.Name)
+                .ToList();
+
+            return readyToWorkCouriers;
         }
     }
 }

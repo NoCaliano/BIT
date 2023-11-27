@@ -4,17 +4,26 @@
 @inject IAllDishes DishBase
 
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<style>
+    #cartContainer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
+        overflow-y: auto; /* Включити прокрутку при необхідності */
+        width: 300px; /* Задайте ширину відповідно до ваших потреб */
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: none; /* По замовчуванню ховаємо контейнер */
+    }
+</style>
 
-<div class="row">
+<button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
 
-
-    @foreach (var dish in DishBase.Dishes)
-    {
-        if (dish.Category != new HomeController(null).GenerateRandomCategory())
+<div class="container">
+    <div class="row">
+        @foreach (var dish in DishBase.Dishes)
         {
             <div class="col-md-4 mb-4">
                 <div class="card">
@@ -34,6 +43,43 @@
                 </div>
             </div>
         }
-    }
+    </div>
 
+    <div id="cartContainer">
+        <!-- Вміст часткового представлення корзини буде тут -->
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var cartContainer = $('#cartContainer');
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (partialView) {
+                    cartContainer.html(partialView);
+                }
+            });
+        });
+
+        // Обробник події для кнопки "Моя корзина"
+        $("#showCartBtn").click(function () {
+            cartContainer.toggle(); // Перемикає відображення/приховування
+            if (cartContainer.is(':visible')) {
+                // Якщо відображено, вивести часткове представлення
+                $.ajax({
+                    url: '/ShopCart/PartCart', // Замініть 'ControllerName' на ваш реальний контролер
+                    type: 'GET',
+                    success: function (partialView) {
+                        cartContainer.html(partialView);
+                    }
+                });
+            }
+        });
+    });
+</script>

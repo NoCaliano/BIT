@@ -39,13 +39,11 @@
 <table>
     <thead>
         <tr>
-            <th>Id</th>
             <th>Страва</th>
             <th>Кількість</th>
             <th>Клієнт</th>
             <th>Номер телефону</th>
             <th>Адреса</th>
-            <th>Категорія</th>
             <th>Дата</th>
             <th>Сума</th>
             <th>Коментар</th>
@@ -59,13 +57,11 @@
             if (order.Courier == name)
             {
                 <tr>
-                    <td>@order.Id</td>
                     <td>@order.ProductName</td>
                     <td>@order.Quanity</td>
                     <td>@order.CustomerName</td>
                     <td>@order.Phonenumber</td>
                     <td>@order.ShippingAddress</td>
-                    <td>@order.Category</td>
                     <td>@order.OrderDate</td>
                     <td>@order.TotalAmount</td>
                     <td>@order.Notes</td>
@@ -78,8 +74,7 @@
                                 <input type="hidden" name="ordId" value="@order.Id" />
                                 <select name="newStatus">
                                     <option value="InProcess">In Process</option>
-                                    <option value="Delivered">Delivered</option>
-                                    <!-- Додайте інші статуси за потреби -->
+                                    <option value="Delivered">Delivered</option>                                    
                                 </select>
                                 <button type="submit" class="btn btn-success">Зробити</button>
                             </form>
@@ -99,8 +94,13 @@
 
 @if (User.IsInRole("Courier"))
 {
-    <form method="post" action="/Courier/OnWork">
-    <input type="hidden" name="CourUserId" value="@UserManager.GetUserId(User)" />
-    <button type="submit" class="btn btn-success">Вийти на роботу</button>
-</form>
+    <form method="post" action="/Courier/OnWork">    
+        <input type="hidden" name="CourUserId" value="@UserManager.GetUserId(User)" />    
+        <button type="submit" class="btn btn-success">Вийти на роботу</button>
+    </form>
+
+    <form method="post" action="/Courier/EndWork">
+        <input type="hidden" name="CourUserId" value="@UserManager.GetUserId(User)" />
+        <button type="submit" class="btn btn-success">Завершити робочий день</button>
+    </form>
 }

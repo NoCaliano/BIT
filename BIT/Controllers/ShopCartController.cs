@@ -137,7 +137,7 @@ namespace BIT.Controllers
             }
 
 
-            return View("MyCart", cart);
+            return PartialView("_MyCart", cart);
         }
 
         public IActionResult MyCart()
@@ -193,7 +193,7 @@ namespace BIT.Controllers
                 }
             }
 
-            return RedirectToAction("MyCart", cart);
+            return PartialView("_MyCart", cart);
         }
 
 
@@ -217,8 +217,10 @@ namespace BIT.Controllers
                 }
             }
 
-            return RedirectToAction("MyCart", cart);
+            return PartialView("_MyCart", cart);
         }
+
+
 
         public IActionResult PartCart()
         {
@@ -228,7 +230,7 @@ namespace BIT.Controllers
             var cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
-            return PartialView("_CartPartial", cart);
+            return PartialView("_MyCart", cart);
         }
 
 

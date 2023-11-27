@@ -1,0 +1,110 @@
+﻿@model BIT.Models.Cart
+
+<style>
+    /* Стилі для контейнера товару */
+    .cart-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* Стилі для зображення товару */
+    .dish-image {
+        max-width: 100px; /* Максимальна ширина зображення */
+        max-height: 100px; /* Максимальна висота зображення */
+        margin-bottom: 5px;
+    }
+
+    /* Стилі для заголовка товару */
+    .dish-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    /* Стилі для інших даних товару */
+    .dish-details {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    /* Стилі для загальної суми замовлення */
+    .grand-total {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    /* Стилі для кнопок +/- */
+    .quantity-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+</style>
+
+@if (Model != null)
+{
+    <div>
+        @foreach (var cartItem in Model.CartItems)
+        {
+            <div class="cart-item">
+                <img class="dish-image" src="@cartItem.Dish.Img" alt="неповезло" />
+                <h2 class="dish-name">@cartItem.Dish.Name</h2>
+                <p class="dish-details">Ціна: @cartItem.Dish.Price</p>
+                <p class="dish-details">Кількість: @cartItem.Quantity</p>
+                <p class="dish-details">Загальна сума за товар: @(cartItem.Quantity * cartItem.Dish.Price)</p>
+
+                <div class="quantity-buttons">
+                    <form asp-action="DecreaseQuantity" asp-route-dishId="@cartItem.Dish.Id" method="post">
+                        <button type="submit">-</button>
+                    </form>
+
+                    <form asp-action="IncreaseQuantity" asp-route-dishId="@cartItem.Dish.Id" method="post">
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+
+    <p class="grand-total">Загальна сума замовлення: @Model.GrandTotal</p>
+
+}
+else
+{
+    <p>Модель Cart є null.</p>
+}
+
+<form method="post" action="@Url.Action("OrderCart", "ShopCart")">
+    <!-- Поле з ідентифікатором кошика -->
+    <input type="hidden" name="CartId" value="@Model.Id" />
+
+    <!-- Кнопка "Замовити" -->
+    <button type="submit">Замовити</button>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        $('.quantity-buttons form').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: data,
+                success: function (partialView) {
+                    $('#cartContainer').html(partialView);
+                }
+            });
+        });
+    });
+</script>
