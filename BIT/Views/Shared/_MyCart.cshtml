@@ -81,12 +81,12 @@ else
     <p>Модель Cart є null.</p>
 }
 
-<form method="post" action="@Url.Action("OrderCart", "ShopCart")">
+<form method="post" action="@Url.Action("OrderDetails", "ShopCart")">
     <!-- Поле з ідентифікатором кошика -->
     <input type="hidden" name="CartId" value="@Model.Id" />
 
     <!-- Кнопка "Замовити" -->
-    <button type="submit">Замовити</button>
+    <button type="submit">Перейти до формлення</button>
 </form>
 
 

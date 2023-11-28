@@ -52,7 +52,7 @@ namespace BIT.Controllers
             return RedirectToAction("Index");
         }
 
-
+        /* старий метод
         public async Task<IActionResult> OrderCart(int CartId)
         {
             var cart = await _context.Carts.Include(c => c.CartItems)
@@ -100,6 +100,7 @@ namespace BIT.Controllers
             return RedirectToAction("Thanks", "Order");
         }
 
+        */
         public IActionResult Cart(CartItem item)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -232,11 +233,11 @@ namespace BIT.Controllers
                 var cartItem = cart.CartItems.FirstOrDefault(ci => ci.Dish.Id == dishId);
 
                 if (cartItem != null)
-                {                   
-                    cart.CartItems.Remove(cartItem);                        
-                    cart.GrandTotal = cart.CartItems.Sum(ci => ci.Quantity * ci.Dish.Price);                        
+                {
+                    cart.CartItems.Remove(cartItem);
+                    cart.GrandTotal = cart.CartItems.Sum(ci => ci.Quantity * ci.Dish.Price);
                     _context.SaveChanges();
-                    
+
                 }
             }
 
@@ -256,5 +257,69 @@ namespace BIT.Controllers
         }
 
 
+
+        //Сторінка яка приймає в себе модель
+        public async Task<IActionResult> OrderDetails(int CartId)
+        {
+            var cart = await _context.Carts.Include(c => c.CartItems)
+                                            .ThenInclude(ci => ci.Dish)
+                                            .FirstOrDefaultAsync(c => c.Id == CartId);
+            return View(cart);
+        }
+
+
+
+        //Новий метод. надає можливість заповнити дані для замовлення кошика
+        public async Task<IActionResult> Confirm(int CartId, string Payment, string Notes, string Address, string Number)
+        {
+            var cart = await _context.Carts        
+                .Include(c => c.CartItems)        
+                .ThenInclude(ci => ci.Dish)        
+                .FirstOrDefaultAsync(c => c.Id == CartId && c.UserId == _userManager.GetUserId(User)); // важлива штука, тепер не можна через код елементу приколи вводити
+
+            var orderDate = DateTime.Now;
+
+            string CustName = User.Identity.Name;
+
+            if (cart != null)
+            {
+                for (int i = 0; i < cart.CartItems.Count(); i++)
+                {
+                    var dish = cart.CartItems[i];
+
+                    if (dish != null)
+                    {
+                        Order order = new Order()
+                        {
+                            UserId = _userManager.GetUserId(User),
+                            Quanity = dish.Quantity,
+                            Product = new List<Dish> { dish.Dish },
+                            Category = dish.Dish.Category,
+                            ProductName = dish.Dish.Name,
+                            TotalAmount = dish.Dish.Price * dish.Quantity,
+                            CustomerName = CustName,
+                            Status = "New",
+                            OrderDate = orderDate,
+
+                            ShippingAddress = Address,
+                            Phonenumber = Number,
+                            PaymentMethod = Payment,
+                            Notes = Notes,
+                        };
+
+                        _context.Orders.Add(order);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                await DeleteCart(cart.Id);
+            }
+            else
+            {
+                return RedirectToAction("Privacy");
+            }
+            return RedirectToAction("Thanks", "Order");
+        }
     }
 }
+
+// TODO зробити люту валідацію, або хімія з html
