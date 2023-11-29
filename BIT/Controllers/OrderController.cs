@@ -1,12 +1,13 @@
 ﻿using BIT.Areas.Identity.Data;
 using BIT.DataStuff;
 using BIT.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BIT.Controllers
 {
-    
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly ILogger<HomeController> _logger;

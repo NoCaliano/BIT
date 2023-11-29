@@ -1,6 +1,7 @@
 ﻿using BIT.Areas.Identity.Data;
 using BIT.DataStuff;
 using BIT.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace BIT.Controllers
 {
+    [Authorize]
     public class ShopCartController : Controller
     {
         private readonly ILogger<HomeController> _logger;
