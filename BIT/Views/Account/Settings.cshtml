@@ -1,0 +1,49 @@
+﻿@using BIT.Data
+@using BIT.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using BIT.Areas.Identity.Data
+@inject IAllUsers UserBase
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model Settings
+
+@foreach(var user in UserBase.Users)
+{
+    if (user.Id == UserManager.GetUserId(User))
+    {
+        <p>@user.FirstName</p>
+        <p>@user.LastName</p>
+        <p>@user.Email</p>
+        <p>@user.Address</p>
+        <p>@user.PhoneNumber</p>
+        break;
+
+        
+    }
+
+}
+<form asp-action="ChangeEmail" asp-controller="Account" method="post">
+    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+    <label asp-for="Email"></label>
+    <input asp-for="Email" id="NewEmail" name="NewEmail" required />
+    <span asp-validation-for="Email"></span>
+    <button type="submit">Change Email</button>
+</form>
+
+
+<form asp-action="ChangePassword" asp-controller="Account" method="post">
+    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+
+    <label for="OldPassword">Old Password</label>
+    <input asp-for="Password" id="OldPassword" name="OldPassword" required />
+    <span asp-validation-for="Password"></span>
+
+    <label for="Password">New Password</label>
+    <input asp-for="Password" id="NewPassword" name="NewPassword" required />
+    <span asp-validation-for="Password"></span>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <button type="submit">Change Password</button>
+
+</form>
