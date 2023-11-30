@@ -4,7 +4,15 @@
 @inject IAllDishes DishBase
 
 
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Сервіс доставки їжі</title>
+    <style>
         body {
     font-family: 'Helvetica', sans-serif;
     margin: 0;
@@ -324,42 +332,23 @@ footer {
     color: #555;
 }
 
-</style>
 
-<button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
 
-<header>
-    <div class="logo">Ваш логотип</div>
-    <nav>
-        <ul>
-            <li><a href="#home">Головна</a></li>
-            <li><a href="#menu">Меню</a></li>
-            <li><a href="#specials">Акції</a></li>
-        </ul>
-    </nav>
-    <!-- Додайте це в розділ header перед закриваючим тегом </header> -->
-    <div class="user-menu">
-        <div class="cart-icon">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
+    </style>
+</head>
+<body>
+ 
+
+    <section class="hero-section">
+        <img src="food_delivery.jpg" alt="Доставка їжі" class="hero-image">
+        <div class="hero-content">
+            <h1>Замовте смачну їжу онлайн</h1>
+            <p>Широкий вибір страв для кожного смаку</p>
+            <button class="hero-button">Переглянути меню</button>
         </div>
-        <div class="profile-icon">
-            <i class="fas fa-user"></i>
-        </div>
-    </div>
+    </section>
 
-</header>
-
-<section class="hero-section">
-    <img src="food_delivery.jpg" alt="Доставка їжі" class="hero-image">
-    <div class="hero-content">
-        <h1>Замовте смачну їжу онлайн</h1>
-        <p>Широкий вибір страв для кожного смаку</p>
-        <button class="hero-button">Переглянути меню</button>
-    </div>
-</section>
-
-<!-- Оновлення в розділі discounts-section -->
+   <!-- Оновлення в розділі discounts-section -->
 <section class="discounts-section" id="specials">
     <h2>Спеціальні пропозиції</h2>
     <div class="discounts-container">
@@ -383,7 +372,7 @@ footer {
 
 
 
-<!-- розділ топ замовлень -->
+  <!-- розділ топ замовлень -->
 <section class="top-orders-section">
     <h2>Топ-замовлення клієнтів</h2>
     <div class="top-orders-container">
@@ -449,7 +438,7 @@ footer {
 
 
 
-<!-- розділ відгуків -->
+    <!-- розділ відгуків -->
 <section class="reviews-section">
     <h2>Відгуки клієнтів</h2>
     <div class="reviews-container">
@@ -487,31 +476,29 @@ footer {
 
 
 
-<!-- Додайте це в розділ wow-experience-section -->
-<section class="wow-experience-section">
-    <h2>Виберіть WOW для найсмачнішої доставки їжі!</h2>
-    <p>Смачна їжа, швидка доставка, задоволені клієнти - це наш рецепт WOW-досвіду. Замовляйте зараз та насолоджуйтеся смаком!</p>
-    <div class="wow-highlights">
-        <div class="wow-highlight-item">
-            <i class="fas fa-utensils"></i>
-            <p>Найсмачніші враження: Вирушайте у кулінарну подорож із смачними стравами, які завоювали серця наших клієнтів.</p>
+    <!-- Додайте це в розділ wow-experience-section -->
+    <section class="wow-experience-section">
+        <h2>Виберіть WOW для найсмачнішої доставки їжі!</h2>
+        <p>Смачна їжа, швидка доставка, задоволені клієнти - це наш рецепт WOW-досвіду. Замовляйте зараз та насолоджуйтеся смаком!</p>
+        <div class="wow-highlights">
+            <div class="wow-highlight-item">
+                <i class="fas fa-utensils"></i>
+                <p>Найсмачніші враження: Вирушайте у кулінарну подорож із смачними стравами, які завоювали серця наших клієнтів.</p>
+            </div>
+            <div class="wow-highlight-item">
+                <i class="fas fa-clock"></i>
+                <p>Швидка доставка: Отримайте свою улюблену їжу у рекордний час - теплу та готову до вас!</p>
+            </div>
+            <div class="wow-highlight-item">
+                <i class="fas fa-heart"></i>
+                <p>Гарантія якості: Справжні смаколики готуються та доставляються з любов'ю та увагою.</p>
+            </div>
+           
         </div>
-        <div class="wow-highlight-item">
-            <i class="fas fa-clock"></i>
-            <p>Швидка доставка: Отримайте свою улюблену їжу у рекордний час - теплу та готову до вас!</p>
-        </div>
-        <div class="wow-highlight-item">
-            <i class="fas fa-heart"></i>
-            <p>Гарантія якості: Справжні смаколики готуються та доставляються з любов'ю та увагою.</p>
-        </div>
-        <div class="wow-highlight-item">
-            <i class="fas fa-clock"></i>
-            <p>Швидка доставка: Отримайте свою улюблену їжу у рекордний час - теплу та готову до вас!</p>
-        </div>
-        <div class="wow-highlight-item">
-            <i class="fas fa-clock"></i>
-            <p>Швидка доставка: Отримайте свою улюблену їжу у рекордний час - теплу та готову до вас!</p>
-        </div>
-    </div>
-    <p>Долучайтесь до WOW-спільноти смаку! Замовляйте зараз та насолоджуйтеся смаком радості в кожному моменті.</p>
-</section>
+        <p>Долучайтесь до WOW-спільноти смаку! Замовляйте зараз та насолоджуйтеся смаком радості в кожному моменті.</p>
+    </section>
+
+
+ 
+</body>
+</html>
