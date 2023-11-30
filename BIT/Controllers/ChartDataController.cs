@@ -68,7 +68,7 @@ namespace BIT.Controllers
             data.Add(labels);
             data.Add(count);
 
-            return Json(data); // Чого тут Json, а в попердньому просто data?
+            return Json(data);
         }
 
     }

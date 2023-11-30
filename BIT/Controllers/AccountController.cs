@@ -108,9 +108,117 @@ namespace BIT.Controllers
                     // Повертаємо перегляд разом із моделлю, щоб вивести повідомлення про помилки
                     return View("Settings", new Settings
                     {
-                        // Тут ви можете передати інші дані, які вам потрібні для відображення на сторінці
+
                     });
                 }
+            }
+           
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeAddress(string userId, string NewAddress)
+        {
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (loggedInUserId != userId)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var user = await _userManager.FindByIdAsync(userId);               
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    user.Address = NewAddress;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                return RedirectToAction("Settings", "Account");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePhone(string userId, string NewPhone)
+        {
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (loggedInUserId != userId)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var Token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, NewPhone);
+                    await _userManager.ChangePhoneNumberAsync(user, NewPhone, Token);
+                    await _userManager.UpdateAsync(user);
+                }
+
+                return RedirectToAction("Settings", "Account");
+            }
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> SetName(string userId, string name)
+        {
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (loggedInUserId != userId)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    user.FirstName = name;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                return RedirectToAction("Settings", "Account");
+            }
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> SetLastName(string userId, string LastName)
+        {
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (loggedInUserId != userId)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    user.LastName = LastName;
+                    await _userManager.UpdateAsync(user);
+                }
+
+                return RedirectToAction("Settings", "Account");
             }
         }
 

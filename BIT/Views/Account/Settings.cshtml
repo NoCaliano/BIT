@@ -7,21 +7,69 @@
 @inject UserManager<ApplicationUser> UserManager
 @model Settings
 
-@foreach(var user in UserBase.Users)
-{
-    if (user.Id == UserManager.GetUserId(User))
-    {
-        <p>@user.FirstName</p>
-        <p>@user.LastName</p>
-        <p>@user.Email</p>
-        <p>@user.Address</p>
-        <p>@user.PhoneNumber</p>
-        break;
-
-        
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
     }
 
-}
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<table>
+    <tr>
+        <th>Ім'я</th>
+        <th>Прізвище</th>
+        <th>Email</th>
+        <th>Адреса</th>
+        <th>Номер телефону</th>
+    </tr>
+    @foreach (var user in UserBase.Users)
+    {
+        if (user.Id == UserManager.GetUserId(User))
+        {
+            if(user.FirstName == null)
+            {
+                <form asp-action="SetName" asp-controller="Account" method="post">
+                    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" id="Name" name="Name" required />
+                    <span asp-validation-for="FirstName"></span>
+                    <button type="submit">Set your name</button>
+                </form>
+            }
+            if (user.LastName == null)
+            {
+                <form asp-action="SetLastName" asp-controller="Account" method="post">
+                    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" id="LastName" name="LastName" required />
+                    <span asp-validation-for="LastName"></span>
+                    <button type="submit">Set your lastname</button>
+                </form>
+            }
+
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.Address</td>
+                <td>@user.PhoneNumber</td>
+            </tr>
+            break;
+        }
+    }
+</table>
+
+
 <form asp-action="ChangeEmail" asp-controller="Account" method="post">
     <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
     <label asp-for="Email"></label>
@@ -47,3 +95,21 @@
     <button type="submit">Change Password</button>
 
 </form>
+
+
+<form asp-action="ChangeAddress" asp-controller="Account" method="post">
+    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+    <label asp-for="Address"></label>
+    <input asp-for="Address" id="NewAddress" name="NewAddress" required />
+    <span asp-validation-for="Address"></span>
+    <button type="submit">Change address</button>
+</form>
+
+<form asp-action="ChangePhone" asp-controller="Account" method="post">
+    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
+    <label asp-for="PhoneNumber"></label>
+    <input asp-for="PhoneNumber" id="NewPhone" name="NewPhone" required />
+    <span asp-validation-for="PhoneNumber"></span>
+    <button type="submit">Change phone number</button>
+</form>
+

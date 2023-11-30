@@ -4,6 +4,7 @@ using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BIT.Controllers
 {
@@ -31,42 +32,62 @@ namespace BIT.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Orders.Add(order);
-                _context.SaveChanges();
-
-                return RedirectToAction("Thanks");
+ 
+                _context.Orders.Add(order);         
+                _context.SaveChanges();                  
+                return RedirectToAction("Thanks");                
             }
-            _context.SaveChanges();
 
-            return View("Privacy", order); // Ви можете вибрати відповідний вид у випадку недійсних даних
+            return View("Order", order);
         }
 
 
+
+
         [HttpGet]
-        public IActionResult Order(int dishId)
+        public async Task<IActionResult> Order(int dishId)
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
-
-            
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user =  await _userManager.FindByIdAsync(userId);
+            string Address;
+            string phone;
+            string customerName;
             if (dish != null)
-            {
-                string userId = null;
+            {                
 
-                if (User.Identity.IsAuthenticated)
-                {                    
-                    userId = _userManager.GetUserId(User);
+                if(user.Address != null) 
+                { 
+                    Address = user.Address; 
                 }
-
-                string customerName = "Guest";
-                if (User.Identity.Name != null)
+                else
                 {
-                    customerName = User.Identity.Name;
-
+                    Address = "Unluck";
                 }
-               
+                if(user.PhoneNumber != null)
+                {
+                    phone = user.PhoneNumber;
+                }
+                else
+                {
+                    phone = "Nothing";
+                }
+                if(user.FirstName != null)
+                {
+                    customerName = user.FirstName;
+                }
+                else
+                {
+                    customerName = "Guest";
+                }
+
+
+
                 Order newOrder = new Order
                 {
                     UserId = userId,
+                    Phonenumber = phone,
+                    ShippingAddress = Address,
                     CustomerName = customerName,
                     OrderDate = DateTime.Now,
                     TotalAmount = dish.Price,
@@ -77,6 +98,7 @@ namespace BIT.Controllers
                     Status = "New",
                     Courier = GetReadyToWorkCourierNames()[0],
                 };
+
 
                 return View("Order", newOrder);
             }
