@@ -24,5 +24,6 @@ namespace BIT.Models
         public int? Salary { get; set; }
         [Column("Виконано доставок")]
         public int? Delievered { get; set; }
+
     }
 }

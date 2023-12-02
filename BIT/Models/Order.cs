@@ -31,5 +31,6 @@ namespace BIT.Models
         public string? Courier { get; set; }
         [Column("Статус")]
         public string Status { get; set; }
+        public string? CourId { get; set; }
     }
 }

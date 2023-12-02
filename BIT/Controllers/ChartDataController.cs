@@ -1,5 +1,6 @@
 ﻿using BIT.DataStuff;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BIT.Controllers
 {
@@ -70,6 +71,45 @@ namespace BIT.Controllers
 
             return Json(data);
         }
+
+
+        [HttpPost]
+        public List<object> CourierDeliveriesChart()
+        {
+            List<object> data = new List<object>();
+
+            // Знаходимо кур'єра за userId
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var courier = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
+
+            if (courier == null)
+            {
+                // Якщо кур'єр не знайдений, можна повернути порожні дані або кинути виняток
+                return data;
+            }
+
+            // Знаходимо дані по доставках для конкретного кур'єра
+            var deliveriesData = _context.Orders
+                .Where(o => o.CourId == courier.Id.ToString() && o.Status == "Delivered")
+                .GroupBy(o => o.OrderDate.Date)
+                .Select(group => new
+                {
+                    Date = group.Key,
+                    TotalDeliveries = group.Count() // Кількість доставок в день
+                })
+                .OrderBy(item => item.Date)
+                .ToList();
+
+            // Формуємо дані для чарту
+            List<DateTime> labels = deliveriesData.Select(item => item.Date).ToList();
+            List<int> totalDeliveries = deliveriesData.Select(item => item.TotalDeliveries).ToList();
+
+            data.Add(labels);
+            data.Add(totalDeliveries);
+
+            return data;
+        }
+
 
     }
 }

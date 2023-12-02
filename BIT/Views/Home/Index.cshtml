@@ -4,501 +4,82 @@
 @inject IAllDishes DishBase
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>Сервіс доставки їжі</title>
-    <style>
-        body {
-    font-family: 'Helvetica', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-}
-
-nav li {
-    margin-right: 20px;
-}
-
-nav a {
-    text-decoration: none;
-    color: white;
-    transition: color 0.3s ease-in-out;
-}
-
-nav a:hover {
-    color: #333;
-}
-
-
-
-.order-button:hover {
-    background-color: #555;
-}
-/* Оновлення в розділі header */
-.user-menu {
-    display: flex;
-    align-items: center;
-}
-
-.cart-icon,
-.profile-icon {
-    margin-right: 20px;
-    cursor: pointer;
-    position: relative;
-}
-
-.cart-count {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 50%;
-    padding: 5px;
-}
-
-/* Додати це, щоб стилізувати іконки */
-.cart-icon i,
-.profile-icon i {
-    font-size: 24px;
-}
-
-
-.hero-section {
-    position: relative;
-    text-align: center;
-    padding: 4em;
-    background-color: #f8f8f8;
-    overflow: hidden;
-}
-
-.hero-image {
-    width: 100%; /* Змінено на 100% для респонсивності */
-    max-height: 400px; /* Додано максимальну ширину для контролю розміру */
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-    margin: 0 auto; /* Центрує зображення */
-}
-
-.hero-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #333;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.hero-content h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-
-.hero-content p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    color: #555;
-}
-
-.hero-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 30px;
-    font-size: 18px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-    border-radius: 5px;
-}
-
-.hero-button:hover {
-    background-color: #45a049;
-}
-
-
-.discounts-section,
-.menu-section,
-.reviews-section,
-.top-orders-section,
-.wow-experience-section {
-    padding: 4em;
-}
-
-.top-orders-section {
-    text-align: center;
-    overflow: hidden;
-}
-
-.top-orders-container {
-    overflow: hidden;
-}
-
-.top-orders-marquee {
-    display: flex;
-    animation: marquee 20s linear infinite;
-}
-
-/*keyframes marquee {
-    0% {
-        transform: translateX(100%);
+<style>
+    #cartContainer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
+        overflow-y: auto; /* Включити прокрутку при необхідності */
+        width: 300px; /* Задайте ширину відповідно до ваших потреб */
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: none; /* По замовчуванню ховаємо контейнер */
     }
-    100% {
-        transform: translateX(-100%);
-    }
-}*/
+</style>
 
-/* Додайте це в ваші стилі */
-.top-order-item {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 20px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-}
+<button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
 
-.top-order-item:hover {
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-}
+<div class="container">
+    <div class="row">
+        @foreach (var dish in DishBase.Dishes)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a href="/Home/Details/@dish.Id">
+                        <img src="@dish.Img" class="card-img-top" alt="невезіння" />
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">@dish.Name</h5>
+                        <p class="card-text">Ціна: @dish.Price</p>
 
-.top-order-image img {
-    width: 120px;
-    height: 120px;
-    border-radius: 15px; /* Залишити округлим, але менш круглим */
-    margin-right: 20px;
-    object-fit: cover;
-}
-
-.top-order-details {
-    flex-grow: 1;
-    text-align: left;
-}
-
-.top-order-name {
-    font-size: 1.5em;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.top-order-price {
-    color: #4CAF50;
-    font-weight: bold;
-    font-size: 1.3em;
-}
-
-
-.reviews-section {
-    text-align: center;
-}
-
-
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 2em;
-}
-.wow-experience-section h2 {
-    color: #4CAF50;
-}
-
-.wow-experience-section p {
-    font-size: 1.2em;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.wow-highlight-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.wow-highlight-item i {
-    font-size: 24px;
-    color: #4CAF50;
-    margin-right: 10px;
-}
-/* Додайте це в ваші стилі */
-.discounts-section {
-    padding: 4em;
-    text-align: center;
-    background-color: #f8f8f8;
-}
-
-.discounts-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.discount-item {
-    width: 300px;
-    margin-bottom: 20px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out;
-}
-
-.discount-item:hover {
-    transform: scale(1.05);
-}
-
-.discount-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px 10px 0 0;
-    object-fit: cover;
-}
-
-.discount-details {
-    padding: 20px;
-}
-
-.discount-details h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.discount-details p {
-    font-size: 1.2em;
-    color: #555;
-}
-
-/* Оновлення в розділі reviews-section */
-.review-item {
-    width: 100%;
-    margin: 0 auto 40px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out;
-    display: flex;
-    align-items: center;
-    max-height: 150px; /* Зменшення максимальної висоти блоку */
-}
-
-/* Оновлення в розділі reviews-section */
-.review-item img {
-    width: 70px; /* Зміна ширини зображення */
-    height: 70px; /* Зміна висоти зображення */
-    border-radius: 0px 0 0 0px;
-    object-fit: cover;
-}
-
-
-.review-details {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #f8f8f8;
-    border-radius: 0 10px 10px 0;
-    text-align: left; /* Вирівнювання тексту по лівому боці */
-}
-
-.review-details h3 {
-    font-size: 1.3em; /* Зменшення розміру шрифту заголовка */
-    margin-bottom: 8px;
-}
-
-.review-details p {
-    font-size: 1em; /* Зменшення розміру шрифту тексту */
-    color: #555;
-}
-
-
-
-    </style>
-</head>
-<body>
- 
-
-    <section class="hero-section">
-        <img src="food_delivery.jpg" alt="Доставка їжі" class="hero-image">
-        <div class="hero-content">
-            <h1>Замовте смачну їжу онлайн</h1>
-            <p>Широкий вибір страв для кожного смаку</p>
-            <button class="hero-button">Переглянути меню</button>
-        </div>
-    </section>
-
-   <!-- Оновлення в розділі discounts-section -->
-<section class="discounts-section" id="specials">
-    <h2>Спеціальні пропозиції</h2>
-    <div class="discounts-container">
-        <div class="discount-item">
-            <img src="discount1.jpg" alt="Знижка 1">
-            <div class="discount-details">
-                <h3>Знижка на комплексний обід</h3>
-                <p>Замовте комплексний обід та отримайте <strong>15% знижки</strong>.</p>
+                        <a href="/Order/Order?dishId=@dish.Id" class="btn btn-primary">Замовити</a>
+                        <form method="post" action="/ShopCart/AddToListOfCartItems">
+                            <input type="hidden" name="dishId" value="@dish.Id" />
+                            <button type="submit" class="btn btn-success">Додати в корзину</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="discount-item">
-            <img src="discount2.jpg" alt="Знижка 2">
-            <div class="discount-details">
-                <h3>Дві піци за ціною однієї</h3>
-                <p>При замовленні однієї піци, отримайте другу в подарунок.</p>
-            </div>
-        </div>
-        <!-- Додайте ще декілька discount-item за потреби -->
+        }
     </div>
-</section>
 
-
-
-  <!-- розділ топ замовлень -->
-<section class="top-orders-section">
-    <h2>Топ-замовлення клієнтів</h2>
-    <div class="top-orders-container">
-        <div class="top-orders-marquee">
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="burger.jpg" alt="Крафтові бургери">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Крафтові бургери</span>
-                    <span class="top-order-price">110 грн</span>
-                </div>
-            </div>
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="pizza.jpg" alt="Піца 'WOW Supreme'">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Піца 'WOW Supreme'</span>
-                    <span class="top-order-price">120 грн</span>
-                </div>
-            </div>
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="pizza.jpg" alt="Піца 'WOW Supreme'">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Піца 'WOW Supreme'</span>
-                    <span class="top-order-price">120 грн</span>
-                </div>
-            </div>
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="pizza.jpg" alt="Піца 'WOW Supreme'">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Піца 'WOW Supreme'</span>
-                    <span class="top-order-price">120 грн</span>
-                </div>
-            </div>
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="pizza.jpg" alt="Піца 'WOW Supreme'">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Піца 'WOW Supreme'</span>
-                    <span class="top-order-price">120 грн</span>
-                </div>
-            </div>
-            <div class="top-order-item">
-                <div class="top-order-image">
-                    <img src="pizza.jpg" alt="Піца 'WOW Supreme'">
-                </div>
-                <div class="top-order-details">
-                    <span class="top-order-name">Піца 'WOW Supreme'</span>
-                    <span class="top-order-price">120 грн</span>
-                </div>
-            </div>
-            <!-- Додайте ще декілька top-order-item за потреби -->
-        </div>
+    <div id="cartContainer">
+        <!-- Вміст часткового представлення корзини буде тут -->
     </div>
-</section>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var cartContainer = $('#cartContainer');
 
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (partialView) {
+                    cartContainer.html(partialView);
+                }
+            });
+        });
 
-    <!-- розділ відгуків -->
-<section class="reviews-section">
-    <h2>Відгуки клієнтів</h2>
-    <div class="reviews-container">
-        <div class="review-item">
-            <img src="client1.jpg" alt="Клієнт 1">
-            <div class="review-details">
-                <h3>Ольга П.</h3>
-                <p>Дуже смачна їжа та швидка доставка. Замовляю вже втретє і завжди задоволена.</p>
-            </div>
-        </div>
-        <div class="review-item">
-            <img src="client2.jpg" alt="Клієнт 2">
-            <div class="review-details">
-                <h3>Андрій М.</h3>
-                <p>Вражений якістю страв і доброзичливим обслуговуванням. Рекомендую!</p>
-            </div>
-        </div>
-        <div class="review-item">
-            <img src="client2.jpg" alt="Клієнт 2">
-            <div class="review-details">
-                <h3>Андрій М.</h3>
-                <p>Вражений якістю страв і доброзичливим обслуговуванням. Рекомендую!</p>
-            </div>
-        </div>
-        <div class="review-item">
-            <img src="client2.jpg" alt="Клієнт 2">
-            <div class="review-details">
-                <h3>Андрій М.</h3>
-                <p>Дуже смачна їжа та швидка доставка. Вражений якістю страв і доброзичливим обслуговуванням. Рекомендую!</p>
-            </div>
-        </div>
-        <!-- Додайте ще декілька review-item за потреби -->
-    </div>
-</section>
-
-
-
-    <!-- Додайте це в розділ wow-experience-section -->
-    <section class="wow-experience-section">
-        <h2>Виберіть WOW для найсмачнішої доставки їжі!</h2>
-        <p>Смачна їжа, швидка доставка, задоволені клієнти - це наш рецепт WOW-досвіду. Замовляйте зараз та насолоджуйтеся смаком!</p>
-        <div class="wow-highlights">
-            <div class="wow-highlight-item">
-                <i class="fas fa-utensils"></i>
-                <p>Найсмачніші враження: Вирушайте у кулінарну подорож із смачними стравами, які завоювали серця наших клієнтів.</p>
-            </div>
-            <div class="wow-highlight-item">
-                <i class="fas fa-clock"></i>
-                <p>Швидка доставка: Отримайте свою улюблену їжу у рекордний час - теплу та готову до вас!</p>
-            </div>
-            <div class="wow-highlight-item">
-                <i class="fas fa-heart"></i>
-                <p>Гарантія якості: Справжні смаколики готуються та доставляються з любов'ю та увагою.</p>
-            </div>
-           
-        </div>
-        <p>Долучайтесь до WOW-спільноти смаку! Замовляйте зараз та насолоджуйтеся смаком радості в кожному моменті.</p>
-    </section>
-
-
- 
-</body>
-</html>
+        // Обробник події для кнопки "Моя корзина"
+        $("#showCartBtn").click(function () {
+            cartContainer.toggle(); // Перемикає відображення/приховування
+            if (cartContainer.is(':visible')) {
+                // Якщо відображено, вивести часткове представлення
+                $.ajax({
+                    url: '/ShopCart/PartCart', // Замініть 'ControllerName' на ваш реальний контролер
+                    type: 'GET',
+                    success: function (partialView) {
+                        cartContainer.html(partialView);
+                    }
+                });
+            }
+        });
+    });
+</script>

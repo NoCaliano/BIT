@@ -1,0 +1,70 @@
+﻿@using BIT.DataStuff
+@using BIT.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using BIT.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IAllCouriers CourBase
+
+
+@foreach(var cour in CourBase.Couriers)
+{
+    if (cour.UserId == UserManager.GetUserId(User))
+    {
+        <p>Ім'я @cour.Name</p>
+        <p>Прізвище @cour.LastName</p>
+        <p>Вид транспорту: @cour.VehicleType</p>
+        <p>Ваша зарплатня: @cour.Salary</p>
+        <p>Остання виплата: @cour.LastSalary</p>
+        <p>Всього виконано доставок: @cour.Delievered</p>
+    }
+}
+<canvas id="MyChart1" style="max-width: 400px; max-height: 200px;"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Завантаження даних для першого графіка
+        $.ajax({
+            type: "POST",
+            url: "/ChartData/CourierDeliveriesChart",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var _chartLabels = data[0];
+                var _chartData = data[1];
+
+                if (_chartLabels.length === 0 || _chartData.length === 0) {
+                    console.error("No data received for the chart.");
+                    return;
+                }
+
+                var barColor = ["red", "green", "gold", "blue"];
+
+                new Chart("MyChart1", {
+                    type: "bar",
+                    data: {
+                        labels: _chartLabels,
+                        datasets: [{
+                            label: 'Кількість доставок',
+                            backgroundColor: barColor,
+                            data: _chartData
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching chart data:", error);
+            }
+        });
+    });
+</script>

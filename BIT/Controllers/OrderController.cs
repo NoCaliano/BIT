@@ -96,7 +96,8 @@ namespace BIT.Controllers
                     ProductName = dish.Name,
                     Category = dish.Category,
                     Status = "New",
-                    Courier = GetReadyToWorkCourierNames()[0],
+                    Courier = GetReadyToWorkCourierNames()[0].Name,
+                    CourId = GetReadyToWorkCourierNames()[0].Id.ToString(),
                 };
 
 
@@ -110,16 +111,27 @@ namespace BIT.Controllers
             }
         }
 
-        public List<string> GetReadyToWorkCourierNames()
+        public List<Courier> GetReadyToWorkCourierNames()
         {
-            // Фільтруємо кур'єрів за умовою ReadyToWork == true і вибираємо їх імена
+            // Отримуємо готових до роботи кур'єрів
             var readyToWorkCouriers = _context.Couriers
                 .Where(c => c.ReadyToWork == true)
-                .Select(c => c.Name)
                 .ToList();
 
-            return readyToWorkCouriers;
+            // Фільтруємо кур'єрів, у яких не більше 5 активних замовлень ("In Process")
+            var couriersWithFewerOrders = readyToWorkCouriers
+                .Where(courier =>
+                {
+                    var activeOrdersCount = _context.Orders
+                        .Count(order => order.CourId == courier.Id.ToString() && order.Status == "InProcess");
+
+                    return activeOrdersCount <= 2;
+                })
+                .ToList();
+
+            return couriersWithFewerOrders;
         }
+
 
     }
 }
