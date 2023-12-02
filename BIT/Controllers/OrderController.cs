@@ -118,19 +118,20 @@ namespace BIT.Controllers
                 .Where(c => c.ReadyToWork == true)
                 .ToList();
 
-            // Фільтруємо кур'єрів, у яких не більше 5 активних замовлень ("In Process")
+            // Фільтруємо кур'єрів, у яких не більше 1 активного замовлення ("In Process")
             var couriersWithFewerOrders = readyToWorkCouriers
                 .Where(courier =>
                 {
                     var activeOrdersCount = _context.Orders
                         .Count(order => order.CourId == courier.Id.ToString() && order.Status == "InProcess");
 
-                    return activeOrdersCount <= 2;
+                    return activeOrdersCount < 2;
                 })
                 .ToList();
 
             return couriersWithFewerOrders;
         }
+
 
 
     }

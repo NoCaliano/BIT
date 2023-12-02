@@ -17,7 +17,7 @@ namespace BIT.Controllers
         private readonly ILogger<CourierController> _logger;
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        
 
         public CourierController(ILogger<CourierController> logger, AppDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -52,7 +52,7 @@ namespace BIT.Controllers
                     var upord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
                     if (upord.Status == "Delivered")
                     {
-                        cour.Delievered = cour.Delievered + 1 ;
+                        cour.Delievered++;
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -100,21 +100,52 @@ namespace BIT.Controllers
             return NotFound();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> TakeOrder(int ordId)
+        public async Task<IActionResult> RefuseOrder(int ordId)
         {
             var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
 
             if (ord != null)
             {
-                ord.Courier = GetReadyToWorkCourierNames().Last();
+                var readyToWorkCouriers = GetReadyToWorkCourierNames();
+
+                if (readyToWorkCouriers.Count >= 2)
+                {
+                    var currentCourier = readyToWorkCouriers.First();
+                    var nextCourier = readyToWorkCouriers.Skip(1).First();
+
+                    ord.Courier = nextCourier.Name;
+                    ord.CourId = nextCourier.Id.ToString();
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Index", "Courier");
+                }
+                else
+                {
+                    // Handle the case when there are not enough couriers to transfer the order
+                    // You may want to log this event or handle it differently based on your requirements
+                    return RedirectToAction("Index", "Courier");
+                }
+            }
+
+            return NotFound();
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> ToNextCourier(int ordId)
+        {
+            var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
+
+            if (ord != null)
+            {
+                ord.Courier = GetReadyToWorkCourierNames()[GetReadyToWorkCourierCount()].Name;
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Courier");
             }
 
             return NotFound();
         }
-
         /*
         [HttpPost]
         public async Task<IActionResult> ChangeVeh(int userId)
@@ -132,16 +163,28 @@ namespace BIT.Controllers
         }
         */
 
-        public List<string> GetReadyToWorkCourierNames()
+        public int GetReadyToWorkCourierCount()
         {
-            // Фільтруємо кур'єрів за умовою ReadyToWork == true і вибираємо їх імена
+            var count = _context.Couriers
+                .Count(c => c.ReadyToWork == true && c.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return count;
+        }
+
+        public List<Courier> GetReadyToWorkCourierNames()
+        {
+            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
             var readyToWorkCouriers = _context.Couriers
-                .Where(c => c.ReadyToWork == true)
-                .Select(c => c.Name)
+                .Where(c => c.ReadyToWork == true && c.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
                 .ToList();
 
+            if (cour != null)
+            {
+                readyToWorkCouriers.Add(cour);
+            }
             return readyToWorkCouriers;
         }
+
 
 
     }

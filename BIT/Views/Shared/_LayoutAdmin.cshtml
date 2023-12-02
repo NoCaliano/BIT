@@ -81,9 +81,56 @@
                 .sub-menu5 a:hover {
                     color: #ffd700;
                 }
+
+        header {
+            background-color: #333;
+            padding: 10px 20px;
+            color: #fff;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .navbar-nav {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            margin-right: 20px;
+        }
+
+            .nav-item a {
+                text-decoration: none;
+                color: #fff;
+                font-size: 18px;
+            }
+
     </style>
 </head>
 <body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="#">Лого</a>
+            </div>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a href="#">🔔</a></li>
+                <li class="nav-item"><a href="#">log out</a></li>
+            </ul>
+        </nav>
+    </header>
     <div class="container">
         <div class="sidebar">
             <ul>
