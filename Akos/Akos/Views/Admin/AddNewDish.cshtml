@@ -1,0 +1,48 @@
+﻿@model Akos.Models.Dish
+
+<form asp-action="AddNewDish" method="post">
+    <div>
+
+
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+
+        <label asp-for="Price"></label>
+        <input asp-for="Price" />
+        <span asp-validation-for="Price"></span>
+
+        <label asp-for="Description"></label>
+        <input asp-for="Description" />
+        <span asp-validation-for="Description"></span>
+
+        <label asp-for="img"></label>
+        <input asp-for="img" />
+        <span asp-validation-for="img"></span>
+
+        <label asp-for="IsFavorite"></label>
+        <input asp-for="IsFavorite" />
+        <span asp-validation-for="IsFavorite"></span>
+
+        <label asp-for="IsAvaileble"></label>
+        <input asp-for="IsAvaileble" />
+        <span asp-validation-for="IsAvaileble"></span>
+
+        <label asp-for="Calories"></label>
+        <input asp-for="Calories" />
+        <span asp-validation-for="Calories"></span>
+
+        <label asp-for="Category"></label>
+        @{
+            var categories = ViewData["categories"] as SelectList;
+        }
+        <select asp-for="Category" asp-items="categories">
+            <option value="">Виберіть категорію</option>
+        </select>
+        <span asp-validation-for="Category"></span>
+
+
+    </div>
+
+    <button type="submit">Додати</button>
+</form>

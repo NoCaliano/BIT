@@ -1,0 +1,95 @@
+﻿@model Dish
+
+<style>
+    #order-container {
+        text-align: center;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: white;
+        position: relative;
+        z-index: 1000; /* Забезпечте, щоб був вищий зрівень ніж #partial-load */
+    }
+
+    #close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    #order-container img {
+        max-width: 80%; /* Зменшено розмір зображення на 80% від оригінального розміру */
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    #order-container form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #order-container label {
+        margin-top: 10px;
+    }
+
+    #order-container input,
+    #order-container textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    #order-container button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+        #order-container button:hover {
+            background-color: #45a049;
+        }
+
+    #order-container p {
+        margin-top: 10px;
+    }
+</style>
+
+<div id="order-container">
+    <div id="close-btn" onclick="closeOrderContainer()">✖</div>
+
+    <img src="@Model.Img" alt="Dish Image" />
+
+    <form asp-action="OrderDone" asp-controller="Order" method="post">
+        <input type="hidden" id="dishId" name="dishId" value="@Model.Id" />
+
+        <label for="Payment">Payment Method:</label>
+        <input type="text" id="Payment" name="Payment" required />
+
+        <label for="Notes">Notes:</label>
+        <textarea id="Notes" name="Notes"></textarea>
+
+        <label for="Address">Address:</label>
+        <input type="text" id="Address" name="Address" required />
+
+        <label for="Phone">Phone Number:</label>
+        <input type="text" id="Phone" name="Phone" required />
+
+        <button type="submit">Confirm Order</button>
+    </form>
+
+    <p>Total Amount: @Model.Price</p>
+</div>
+
+<script>
+    function closeOrderContainer() {
+        $("#order-container").fadeOut();
+    }
+</script>
+
+

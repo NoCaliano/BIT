@@ -27,89 +27,51 @@ namespace BIT.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult OrderDetails(Order order)
+        [HttpGet]
+        public IActionResult PartTest(int dishId)
         {
-            if (ModelState.IsValid)
-            {
- 
-                _context.Orders.Add(order);         
-                _context.SaveChanges();                  
-                return RedirectToAction("Thanks");                
-            }
-
-            return View("Order", order);
+            var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
+            return PartialView("testpart", dish);
         }
 
 
-
-
-        [HttpGet]
-        public async Task<IActionResult> Order(int dishId)
+        //Метод треба буде ще доробити
+        [HttpPost]
+        public async Task<IActionResult> OrderDone(int dishId, string Address, string Phone, string Payment, string Notes) 
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user =  await _userManager.FindByIdAsync(userId);
-            string Address;
-            string phone;
-            string customerName;
+            var user = await _userManager.FindByIdAsync(userId);
             if (dish != null)
-            {                
-
-                if(user.Address != null) 
-                { 
-                    Address = user.Address; 
-                }
-                else
-                {
-                    Address = "Unluck";
-                }
-                if(user.PhoneNumber != null)
-                {
-                    phone = user.PhoneNumber;
-                }
-                else
-                {
-                    phone = "Nothing";
-                }
-                if(user.FirstName != null)
-                {
-                    customerName = user.FirstName;
-                }
-                else
-                {
-                    customerName = "Guest";
-                }
-
-
-
-                Order newOrder = new Order
+            {
+                Order order = new Order() 
                 {
                     UserId = userId,
-                    Phonenumber = phone,
+                    Phonenumber = Phone,
                     ShippingAddress = Address,
-                    CustomerName = customerName,
+                    CustomerName = user.Email,
+                    PaymentMethod = Payment,
                     OrderDate = DateTime.Now,
                     TotalAmount = dish.Price,
                     Product = new List<Dish> { dish },
                     Quanity = 1,
+                    Notes = Notes,
                     ProductName = dish.Name,
                     Category = dish.Category,
                     Status = "New",
                     Courier = GetReadyToWorkCourierNames()[0].Name,
                     CourId = GetReadyToWorkCourierNames()[0].Id.ToString(),
                 };
-
-
-                return View("Order", newOrder);
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Thanks", "Order");
             }
-
             else
             {
-                // Обробка випадку, коли страва не знайдена
-                return RedirectToAction("Dashboard", "Admin");
+                return NotFound();
             }
         }
+
 
         public List<Courier> GetReadyToWorkCourierNames()
         {

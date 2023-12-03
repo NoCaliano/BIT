@@ -32,8 +32,6 @@ namespace BIT.Models
         [Display(Name = "Прізвище")]
         public string LastName { get; set; }
 
-
-
         [Required]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Телефон для зв'язку")]

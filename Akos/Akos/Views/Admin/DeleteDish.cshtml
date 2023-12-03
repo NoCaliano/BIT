@@ -1,0 +1,19 @@
+﻿@model List<Akos.Models.Dish>
+@using Akos.DataStuff;
+@using Akos.Interfaces;
+@inject IAllDishes DishBase;
+@{
+    Layout = "_LayoutAdmin";
+}
+@foreach (var dish in DishBase.Dishes)
+{
+    <div>
+        <!-- Показати дані рядка -->
+        <span>@dish.Name</span>
+        <!-- Додати кнопку для видалення -->
+        <form asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@dish.Id" />
+            <button type="submit">Видалити</button>
+        </form>
+    </div>
+}

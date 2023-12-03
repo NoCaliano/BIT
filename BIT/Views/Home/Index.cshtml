@@ -19,6 +19,22 @@
     }
 </style>
 
+<style>
+    #partial-load {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 80vh;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        display: none;
+        z-index: 999; /* Додайте z-index, щоб мати вищий зрівень ніж інші елементи на сторінці */
+    }
+</style>
+
 <button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
 
 <div class="container">
@@ -34,7 +50,12 @@
                         <h5 class="card-title">@dish.Name</h5>
                         <p class="card-text">Ціна: @dish.Price</p>
 
-                        <a href="/Order/Order?dishId=@dish.Id" class="btn btn-primary">Замовити</a>
+                        <form action="/Order/PartTest" class="order-form">
+                            <input type="hidden" name="dishId" value="@dish.Id" />
+                            <button type="button" class="btn btn-success order-btn">Замовити</button>
+                        </form>
+
+
                         <form method="post" action="/ShopCart/AddToListOfCartItems">
                             <input type="hidden" name="dishId" value="@dish.Id" />
                             <button type="submit" class="btn btn-success">Додати в корзину</button>
@@ -45,12 +66,50 @@
         }
     </div>
 
+    <div id="OrderContainer">
+        <!-- Вміст часткового представлення замовлення буде тут -->
+    </div>
+
+
     <div id="cartContainer">
         <!-- Вміст часткового представлення корзини буде тут -->
     </div>
+
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var partialLoadContainer = $('#partial-load');
+
+        // Додано обробник кліку для кнопки "Замовити"
+        $(".order-btn").click(function () {
+            var form = $(this).closest('form');
+            var dishId = form.find('input[name="dishId"]').val();
+
+            // Вивести часткове представлення замовлення на сторінку
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: { dishId: dishId },
+                success: function (partialView) {
+                    partialLoadContainer.html(partialView).fadeIn();
+                }
+            });
+        });
+
+        // Додано обробник кліку для закриття часткового представлення
+        $(document).on('click', '#partial-load', function (e) {
+            if ($(e.target).is('#partial-load')) {
+                partialLoadContainer.fadeOut();
+            }
+        });
+    });
+</script>
+
+
+
 <script>
     $(document).ready(function () {
         var cartContainer = $('#cartContainer');
@@ -83,3 +142,6 @@
         });
     });
 </script>
+
+<div id="partial-load"></div>
+

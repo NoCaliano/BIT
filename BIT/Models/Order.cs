@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BIT.Models
 {
@@ -12,8 +13,9 @@ namespace BIT.Models
         [Column("Клієнт")]
         public string CustomerName { get; set; }
         [Column("Номер телефону")]
+        [RegularExpression(@"^\+\d{8,}$", ErrorMessage = "Потрібно вказати плюс та мінімум 8 цифр")]
         public string? Phonenumber { get; set; }
-        [Column("Адреса")]
+        [Column("Адреса")]        
         public string ShippingAddress { get; set; }
         public string? UserId { get; set; }
         public List<Dish> Product { get; set; }
@@ -26,6 +28,7 @@ namespace BIT.Models
         [Column("Коментар")]
         public string? Notes { get; set; }
         [Column("Спосіб оплати")]
+        [RegularExpression(@"^[a-zA-Z]{4,}$", ErrorMessage = "Мінімум 4 букви")]
         public string PaymentMethod { get; set; }
         [Column("Кур'єр")]
         public string? Courier { get; set; }

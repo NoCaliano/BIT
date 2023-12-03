@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li class="expandable" id="products">
+                    Товари
+                    <ul class="sub-menu" style="display: none;">
+                        <li><a href="@Url.Action("AddNewDish", "Admin")">Додати товар</a></li>
+                        <li><a href="@Url.Action("DeleteDish", "Admin")">Видалити товари</a></li>
+                        <li><a href="@Url.Action("AddCategory", "Admin")">Додати категорію</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var products = document.getElementById('products');
+            var subMenu = products.querySelector('.sub-menu');
+
+            products.addEventListener('click', function () {
+                subMenu.style.display = subMenu.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

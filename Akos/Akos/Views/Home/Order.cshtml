@@ -1,4 +1,4 @@
-﻿@model BIT.Models.Order
+﻿@model Akos.Models.Order
 
 @{
     ViewData["Title"] = "Order Details";
@@ -6,22 +6,15 @@
 
 <h2>Order Details</h2>
 
-<form asp-action="OrderDetails" method="post">
+<form asp-action="ProcessOrder" method="post">
     <table class="table">
-        @Html.HiddenFor(model => model.Quanity)
         @Html.HiddenFor(model => model.CustomerName)
         @Html.HiddenFor(model => model.OrderDate)
         @Html.HiddenFor(model => model.TotalAmount)
-        @Html.HiddenFor(model => model.ProductName)
+        @Html.HiddenFor(model => model.Products)
         @Html.HiddenFor(model => model.Product)
         @Html.HiddenFor(model => model.Status)
         @Html.HiddenFor(model => model.Category)
-        @Html.HiddenFor(model => model.UserId)
-        @Html.HiddenFor(model => model.Courier)
-        @Html.HiddenFor(model => model.Phonenumber)
-        @Html.HiddenFor(model => model.ShippingAddress)
-        @Html.HiddenFor(model => model.CourId)
-
 
         <tr>
             <th>Payment Method</th>
@@ -60,7 +53,7 @@
                 <input type="submit" value="Submit Order">
             </td>
         </tr>
-        <table />
+        <table/>
 </form>
 
 <a href="/">Back to Home</a>
