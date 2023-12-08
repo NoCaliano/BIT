@@ -28,6 +28,10 @@ namespace BIT.Controllers
         {
             return View("~/Views/Admin/Dashboard.cshtml");
         }
+        public IActionResult FindOrder()
+        {
+            return View();
+        }
 
         public IActionResult Charts()
         {
@@ -49,6 +53,11 @@ namespace BIT.Controllers
             return View();
         }
 
+
+        public IActionResult Find()
+        {
+            return View();
+        }
         public IActionResult Orders()
         {
             return View();
@@ -207,6 +216,53 @@ namespace BIT.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Couriers", "Admin");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ShowUserData(string IdOrEmail)
+        {
+            var user = await _userManager.FindByIdAsync(IdOrEmail);
+            if (user != null)
+            {
+                return PartialView("_UserStatistic", user);
+            }
+            else
+            {
+                var userr = await _userManager.FindByEmailAsync(IdOrEmail);
+                {
+                    if (userr != null)
+                    {
+                        return PartialView("_UserStatistic", userr);
+                    }
+                }
+            }
+            return PartialView("_UserNotFound");
+        }
+
+        [HttpGet]
+        public IActionResult ShowOrderData(string IdOrPhone)
+        {
+            // Перевірка, чи IdOrPhone можна конвертувати в int
+            if (int.TryParse(IdOrPhone, out int orderId))
+            {
+                // Конвертація вдалася, шукаємо за Id
+                var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+                if (order != null)
+                {
+                    return PartialView("_OrderData", order);
+                }
+            }
+
+            // Шукаємо за номером телефону
+            var ord = _context.Orders.FirstOrDefault(p => p.Phonenumber == IdOrPhone);
+            if (ord != null)
+            {
+                return PartialView("_OrderData", ord);
+            }
+
+            // Якщо не вдалося знайти за Id і за номером телефону, повертаємо відповідь про помилку
+            return PartialView("_UserNotFound");
+        }
+
 
     }
 }

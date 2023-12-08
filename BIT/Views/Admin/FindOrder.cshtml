@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+}
+
+<form action="/Admin/ShowOrderData" class="poshuk_form">
+    <label for="IdOrPhone">Айді замовлення або телефон користувача:</label>
+    <input type="text" id="IdOrPhone" name="IdOrPhone" required />
+    <button type="button" class="find-btn">Пошук</button>
+</form>
+
+
+
+<div id="partial-load"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var partialLoadContainer = $('#partial-load');
+
+        // Додано обробник кліку для кнопки "Замовити"
+        $(".find-btn").click(function () {
+            var form = $(this).closest('form');
+            var IdOrPhone = form.find('input[name="IdOrPhone"]').val();
+
+            // Вивести часткове представлення замовлення на сторінку
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: { IdOrPhone: IdOrPhone },
+                success: function (partialView) {
+                    partialLoadContainer.html(partialView).fadeIn();
+                }
+            });
+        });
+
+        // Додано обробник кліку для закриття часткового представлення
+        $(document).on('click', '#partial-load', function (e) {
+            if ($(e.target).is('#partial-load')) {
+                partialLoadContainer.fadeOut();
+            }
+        });
+    });
+</script>

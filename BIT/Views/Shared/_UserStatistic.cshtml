@@ -1,0 +1,19 @@
+﻿@using BIT.Areas.Identity.Data;
+@using BIT.DataStuff
+@using BIT.Interfaces
+@inject IAllOrders OrderBase
+@model ApplicationUser
+
+
+<h1>Користувач знайдений</h1>
+
+@foreach(var ord in OrderBase.Orders)
+{
+    if(ord.UserId == Model.Id)
+    {
+        <h2>@ord.Product[0].Price</h2>
+        <h2>@ord.ProductName</h2>
+        <h2>@ord.TotalAmount</h2>
+        <h2>@ord.Phonenumber</h2>
+    }
+}
