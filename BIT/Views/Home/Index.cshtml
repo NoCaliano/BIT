@@ -66,10 +66,6 @@
         }
     </div>
 
-    <div id="OrderContainer">
-        <!-- Вміст часткового представлення замовлення буде тут -->
-    </div>
-
 
     <div id="cartContainer">
         <!-- Вміст часткового представлення корзини буде тут -->
@@ -145,3 +141,26 @@
 
 <div id="partial-load"></div>
 
+<script>
+    $('#partial-load').on('submit', 'form', function (e) {
+        e.preventDefault(); // Запобігає стандартному поданню форми
+        var form = $(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function (data) {
+                // Якщо сервер повертає HTML з помилками валідації, оновіть контейнер форми
+                if ($(data).find('.field-validation-error').length > 0) {
+                    $('#partial-load').html(data);
+                } else {
+                    window.location.href = '/Order/Thanks';
+                }
+            },
+            error: function () {
+                console.error('Failed to submit form');
+            }
+        });
+    });
+</script>

@@ -1,9 +1,12 @@
 ﻿using BIT.Areas.Identity.Data;
 using BIT.DataStuff;
+using BIT.Hubs;
 using BIT.Models;
+using BIT.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -15,14 +18,48 @@ namespace BIT.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public ShopCartController(ILogger<HomeController> logger, AppDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IHubContext<ChatHub> _hubContext;
+        public ShopCartController(ILogger<HomeController> logger, AppDbContext context, UserManager<ApplicationUser> userManager, IHubContext<ChatHub> hubContext)
         {
             _context = context;
             _logger = logger;
             _userManager = userManager;
+            _hubContext = hubContext;
         }
 
-        public IActionResult AddToListOfCartItems(int dishId)
+
+        public IActionResult Checkout()
+        { 
+            return View();
+        }
+
+        public IActionResult CartForm()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cart = _context.Carts.Include(c => c.CartItems)
+                                     .ThenInclude(ci => ci.Dish)
+                                     .FirstOrDefault(c => c.UserId == userId);
+
+            CartDetailsViewModel cartDetailsViewModel = new CartDetailsViewModel()
+            {
+                CartId = cart.Id
+            };
+            return PartialView("_CartForm", cartDetailsViewModel);
+        }
+
+        public IActionResult PartCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Отримати кошик користувача з бази даних
+            var cart = _context.Carts.Include(c => c.CartItems)
+                                     .ThenInclude(ci => ci.Dish)
+                                     .FirstOrDefault(c => c.UserId == userId);
+            return PartialView("_MyCart", cart);
+        }
+
+
+        public async Task<IActionResult> AddToListOfCartItems(int dishId)
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
 
@@ -34,8 +71,11 @@ namespace BIT.Controllers
                     Quantity = 1,
                 };
 
-                return Cart(cartItem);
+                IActionResult result = await Cart(cartItem);
+
+                return result;
             }
+
 
             // Обробка ситуації, коли страву не знайдено (наприклад, виведення повідомлення або перенаправлення на іншу сторінку)
             return RedirectToAction("Index");
@@ -47,6 +87,7 @@ namespace BIT.Controllers
 
             if (cart != null)
             {
+                cart.GrandTotal = 0;
                 _context.CartItems.RemoveRange(cart.CartItems);
                 await _context.SaveChangesAsync();
             }
@@ -54,60 +95,11 @@ namespace BIT.Controllers
             return RedirectToAction("Index");
         }
 
-        /* старий метод
-        public async Task<IActionResult> OrderCart(int CartId)
-        {
-            var cart = await _context.Carts.Include(c => c.CartItems)
-                                            .ThenInclude(ci => ci.Dish)
-                                            .FirstOrDefaultAsync(c => c.Id == CartId);
-            var orderDate = DateTime.Now;
-
-            string CustName = User.Identity.Name;
-            if (cart != null)
-            {
-                for (int i = 0; i < cart.CartItems.Count(); i++)
-                {
-                    var dish = cart.CartItems[i];
-
-                    if (dish != null)
-                    {
-                        Order order = new Order()
-                        {
-                            UserId = _userManager.GetUserId(User),
-                            Quanity = dish.Quantity,
-                            Product = new List<Dish> { dish.Dish },
-                            Category = dish.Dish.Category,
-                            ProductName = dish.Dish.Name,
-                            TotalAmount = dish.Dish.Price * dish.Quantity,
-                            CustomerName = CustName,
-                            Status = "New",
-                            OrderDate = orderDate,
-
-                            ShippingAddress = "South Centrel LA",
-                            Phonenumber = "+380688037364",
-                            PaymentMethod = "MasterCard",
-                            Notes = "All my fellas",
-                        };
-
-                        _context.Orders.Add(order);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-                await DeleteCart(cart.Id);
-            }
-            else
-            {
-                return RedirectToAction("Privacy");
-            }
-            return RedirectToAction("Thanks", "Order");
-        }
-
-        */
-        public IActionResult Cart(CartItem item)
+        public async Task<IActionResult> Cart(CartItem item)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Cart cart = _context.Carts.Include(c => c.CartItems)
+            var cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
 
@@ -139,38 +131,15 @@ namespace BIT.Controllers
                 _context.SaveChanges();
             }
 
-
+            await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
 
-        public IActionResult MyCart()
+        public async Task<IActionResult> DecreaseQuantity(int dishId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Отримати кошик користувача з бази даних
             var cart = _context.Carts.Include(c => c.CartItems)
-                                     .ThenInclude(ci => ci.Dish)
-                                     .FirstOrDefault(c => c.UserId == userId);
-
-            if (cart == null)
-            {
-                // Створити пустий кошик, якщо його не існує
-                cart = new Cart
-                {
-                    UserId = userId,
-                    CartItems = new List<CartItem>(),
-                    GrandTotal = 0
-                };
-            }
-
-            return View(cart);
-        }
-
-        public IActionResult DecreaseQuantity(int dishId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            Cart cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
 
@@ -195,15 +164,16 @@ namespace BIT.Controllers
                     }
                 }
             }
+            await _hubContext.Clients.All.SendAsync("CartUpdated");
 
             return PartialView("_MyCart", cart);
         }
 
-        public IActionResult IncreaseQuantity(int dishId)
+        public async Task<IActionResult> IncreaseQuantity(int dishId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Cart cart = _context.Carts.Include(c => c.CartItems)
+            var cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
 
@@ -219,14 +189,16 @@ namespace BIT.Controllers
                 }
             }
 
+            await _hubContext.Clients.All.SendAsync("CartUpdated");
+
             return PartialView("_MyCart", cart);
         }
 
-        public IActionResult CleanSubject(int dishId)
+        public async Task<IActionResult> CleanSubject(int dishId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Cart cart = _context.Carts.Include(c => c.CartItems)
+            var cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
 
@@ -242,86 +214,85 @@ namespace BIT.Controllers
 
                 }
             }
-
+            await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
 
-
-        public IActionResult PartCart()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            // Отримати кошик користувача з бази даних
-            var cart = _context.Carts.Include(c => c.CartItems)
-                                     .ThenInclude(ci => ci.Dish)
-                                     .FirstOrDefault(c => c.UserId == userId);
-            return PartialView("_MyCart", cart);
-        }
-
-
-
-        //Сторінка яка приймає в себе модель
         public async Task<IActionResult> OrderDetails(int CartId)
         {
             var cart = await _context.Carts.Include(c => c.CartItems)
                                             .ThenInclude(ci => ci.Dish)
                                             .FirstOrDefaultAsync(c => c.Id == CartId);
-            return View(cart);
+
+            CartDetailsViewModel det = new CartDetailsViewModel()
+            {
+                CartId = cart.Id
+            };
+
+            return View(det);
         }
 
 
 
-        //Новий метод. надає можливість заповнити дані для замовлення кошика
-        public async Task<IActionResult> Confirm(int CartId, string Payment, string Notes, string Address, string Number)
+        //Метод можна покращити
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(CartDetailsViewModel d)
         {
-            var cart = await _context.Carts        
-                .Include(c => c.CartItems)        
-                .ThenInclude(ci => ci.Dish)        
-                .FirstOrDefaultAsync(c => c.Id == CartId && c.UserId == _userManager.GetUserId(User)); // важлива штука, тепер не можна через код елементу приколи вводити
-
-            var orderDate = DateTime.Now;
-
-            string CustName = User.Identity.Name;
-
-            if (cart != null)
+            if (ModelState.IsValid)
             {
-                for (int i = 0; i < cart.CartItems.Count(); i++)
+                var cart = await _context.Carts
+                    .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Dish)
+                    .FirstOrDefaultAsync(c => c.Id == d.CartId && c.UserId == _userManager.GetUserId(User)); // важлива штука, тепер не можна через код елементу приколи вводити
+
+                var orderDate = DateTime.Now;
+
+                string CustName = User.Identity.Name;
+
+                if (cart != null)
                 {
-                    var dish = cart.CartItems[i];
-
-                    if (dish != null)
+                    for (int i = 0; i < cart.CartItems.Count(); i++)
                     {
-                        Order order = new Order()
+                        var dish = cart.CartItems[i];
+
+                        if (dish != null)
                         {
-                            UserId = _userManager.GetUserId(User),
-                            Quanity = dish.Quantity,
-                            Product = new List<Dish> { dish.Dish },
-                            Category = dish.Dish.Category,
-                            ProductName = dish.Dish.Name,
-                            TotalAmount = dish.Dish.Price * dish.Quantity,
-                            CustomerName = CustName,
-                            Status = "New",
-                            OrderDate = orderDate,
+                            Order order = new Order()
+                            {
+                                UserId = _userManager.GetUserId(User),
+                                Quanity = dish.Quantity,
+                                Product = new List<Dish> { dish.Dish },
+                                Category = dish.Dish.Category,
+                                ProductName = dish.Dish.Name,
+                                TotalAmount = dish.Dish.Price * dish.Quantity,
+                                CustomerName = CustName,
+                                Status = "New",
+                                OrderDate = orderDate,
 
-                            ShippingAddress = Address,
-                            Phonenumber = Number,
-                            PaymentMethod = Payment,
-                            Notes = Notes,
-                        };
+                                ShippingAddress = d.ShippingAdrees,
+                                Phonenumber = d.PhoneNumber,
+                                PaymentMethod = d.PaymentMethod,
+                                Notes = d.Notes,
+                            };
 
-                        _context.Orders.Add(order);
-                        await _context.SaveChangesAsync();
+                            _context.Orders.Add(order);
+                            await _context.SaveChangesAsync();
+                        }
                     }
+                    await DeleteCart(cart.Id);
                 }
-                await DeleteCart(cart.Id);
+                else
+                {
+                    return RedirectToAction("Privacy");
+                }
+                return RedirectToAction("Thanks", "Order");
             }
-            else
-            {
-                return RedirectToAction("Privacy");
+            else 
+            { 
+                return PartialView("_CartOrder",d); 
             }
-            return RedirectToAction("Thanks", "Order");
         }
+
     }
 }
-
-// TODO зробити люту валідацію, або хімія з html

@@ -27,10 +27,6 @@
                 <label asp-for="Input.ConfirmPassword">ConfirmPassword</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <div class="form-check mb-3">
-                <input asp-for="Input.IsExtendedRegistration" class="form-check-input" id="extendedRegistrationToggle" />
-                <label asp-for="Input.IsExtendedRegistration" class="form-check-label">Хочу стати кур'єром блять</label>
-            </div>
 
             <div id="extendedFields" style="display: none;">
                 <div class="form-floating mb-3">
@@ -59,6 +55,13 @@
                     <span asp-validation-for="Input.VehicleType" class="text-danger"></span>
                 </div>
             </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Input.IsExtendedRegistration" class="form-check-input" id="extendedRegistrationToggle" />
+                <label asp-for="Input.IsExtendedRegistration" class="form-check-label">Хочу стати кур'єром блять</label>
+            </div>
+
+           
 
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>

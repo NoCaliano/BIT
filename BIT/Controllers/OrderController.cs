@@ -1,9 +1,12 @@
 ﻿using BIT.Areas.Identity.Data;
 using BIT.DataStuff;
 using BIT.Models;
+using BIT.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Security.Claims;
 
 namespace BIT.Controllers
@@ -28,73 +31,92 @@ namespace BIT.Controllers
         }
 
         [HttpGet]
-        public IActionResult PartTest(int dishId)
+        public async Task<IActionResult> PartTest(int dishId)
         {
-            var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
-            return PartialView("testpart", dish);
-        }
-
-
-        //Метод треба буде ще доробити
-        [HttpPost]
-        public async Task<IActionResult> OrderDone(int dishId, string Address, string Phone, string Payment, string Notes) 
-        {
-            var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
-            if (dish != null)
+            var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);            
+            if (dish != null && user != null)
             {
-                Order order = new Order() 
+                OrderDetailsViewModel d = new OrderDetailsViewModel()
                 {
-                    UserId = userId,
-                    Phonenumber = Phone,
-                    ShippingAddress = Address,
-                    CustomerName = user.Email,
-                    PaymentMethod = Payment,
-                    OrderDate = DateTime.Now,
-                    TotalAmount = dish.Price,
-                    Product = new List<Dish> { dish },
-                    Quanity = 1,
-                    Notes = Notes,
-                    ProductName = dish.Name,
-                    Category = dish.Category,
-                    Status = "New",
-                    Courier = GetReadyToWorkCourierNames()[0].Name,
-                    CourId = GetReadyToWorkCourierNames()[0].Id.ToString(),
+                    DishId = dish.Id,
+                    PhoneNumber = user.PhoneNumber,
+                    ShippingAdrees = user.Address,
+                    
                 };
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Thanks", "Order");
+                return PartialView("_SingleOrder", d);
+            }
+            return NotFound();
+        }
+
+      
+        //Метод треба буде ще доробити
+        [HttpPost]        
+        [ValidateAntiForgeryToken]
+        
+        public async Task<IActionResult> OrderDone(OrderDetailsViewModel detail) 
+        {
+            if (ModelState.IsValid)
+            {
+                var dish = _context.Dishes.FirstOrDefault(d => d.Id == detail.DishId);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var user = await _userManager.FindByIdAsync(userId);
+                if (dish != null)
+                {
+                    Order order = new Order()
+                    {
+                        UserId = userId,
+                        Phonenumber = detail.PhoneNumber,
+                        ShippingAddress = detail.ShippingAdrees,
+                        CustomerName = user.Email,
+                        PaymentMethod = detail.PaymentMethod,
+                        OrderDate = DateTime.Now,
+                        TotalAmount = dish.Price,
+                        Product = new List<Dish> { dish },
+                        Quanity = 1,
+                        Notes = detail.Notes,
+                        ProductName = dish.Name,
+                        Category = dish.Category,
+                        Status = "New",
+                        Courier = GetReadyToWorkCouriers()[0].Name,
+                        CourId = GetReadyToWorkCouriers()[0].Id.ToString(),
+                    };
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Thanks", "Order");
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
             else
             {
-                return NotFound();
+                return PartialView("_SingleOrder", detail);
             }
         }
 
-
-        public List<Courier> GetReadyToWorkCourierNames()
+        public List<Courier> GetReadyToWorkCouriers()
         {
-            // Отримуємо готових до роботи кур'єрів
             var readyToWorkCouriers = _context.Couriers
                 .Where(c => c.ReadyToWork == true)
                 .ToList();
 
-            // Фільтруємо кур'єрів, у яких не більше 1 активного замовлення ("In Process")
-            var couriersWithFewerOrders = readyToWorkCouriers
-                .Where(courier =>
-                {
-                    var activeOrdersCount = _context.Orders
-                        .Count(order => order.CourId == courier.Id.ToString() && order.Status == "InProcess");
-
-                    return activeOrdersCount < 2;
-                })
+            var courierIdsWithActiveOrders = _context.Orders
+                .Where(order => order.Status == "InProcess")
+                .GroupBy(order => order.CourId)
+                .Where(group => group.Count() >= 2)
+                .Select(group => group.Key)
                 .ToList();
 
-            return couriersWithFewerOrders;
+            var availableCouriers = readyToWorkCouriers
+                .Where(courier => !courierIdsWithActiveOrders.Contains(courier.Id.ToString()))
+                .ToList();
+
+            return availableCouriers;
         }
 
-
-
+        
     }
 }

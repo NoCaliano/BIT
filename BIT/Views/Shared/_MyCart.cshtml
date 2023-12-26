@@ -46,7 +46,7 @@
 
 </style>
 
-@if (Model != null)
+@if (Model != null && Model.CartItems.Count() > 0)
 {
     <div>
         @foreach (var cartItem in Model.CartItems)
@@ -78,15 +78,11 @@
 }
 else
 {
-    <p>Модель Cart є null.</p>
+    <p>Вашик кошик порожній, крінж повний</p>
 }
 
-<form method="post" action="@Url.Action("OrderDetails", "ShopCart")">
-    <!-- Поле з ідентифікатором кошика -->
-    <input type="hidden" name="CartId" value="@Model.Id" />
-
-    <!-- Кнопка "Замовити" -->
-    <button type="submit">Перейти до формлення</button>
+<form method="post" action="@Url.Action("Checkout", "ShopCart")">
+    <button id="checkout-button" type="submit">Перейти до оформлення</button>
 </form>
 
 
@@ -106,6 +102,29 @@ else
                 data: data,
                 success: function (partialView) {
                     $('#cartContainer').html(partialView);
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $('.quantity-buttons form').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: data,
+                success: function (partialView) {
+                    $('#cart-container').html(partialView); // Змінено id на 'cart-container'
+                },
+                error: function () {
+                    console.error('Failed to update cart');
                 }
             });
         });

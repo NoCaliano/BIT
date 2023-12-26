@@ -1,6 +1,7 @@
 using BIT.Areas.Identity.Data;
 using BIT.Data;
 using BIT.DataStuff;
+using BIT.Hubs;
 using BIT.Interfaces;
 using BIT.Mocks;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ builder.Services.AddScoped<IAllRoles, MockRole>();
 builder.Services.AddScoped<IAllOrders, MockOrder>();
 builder.Services.AddScoped<IAllCouriers, MockCourier>();
 builder.Services.AddScoped<IAllRequisitions, MockRequisition>();
+builder.Services.AddScoped<IAllDishData, MockData>();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()  // Add roles configuration
     .AddEntityFrameworkStores<AuthDbContext>()
@@ -26,6 +28,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -58,5 +61,15 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Welcome}/{action=Home}/{id?}");
+
+// It just work
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/cartHub");
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
 
 app.Run();

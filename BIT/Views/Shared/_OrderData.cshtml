@@ -1,5 +1,13 @@
-﻿@model Order
+﻿@using BIT.Controllers;
+@using BIT.DataStuff
+@using BIT.Interfaces
+@inject IAllOrders OrderBase
+@inject IAllDishData Carta
+@model Order
 
+@{
+    string imgs = Carta.RetDishImageByName(Model.ProductName);
+}
 @if(Model != null)
 {
     <h1>COOL!</h1>
@@ -8,3 +16,6 @@ else
 {
     <h2>NOT COOL</h2>
 }
+
+<img src="@imgs"/>
+
