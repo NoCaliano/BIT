@@ -15,7 +15,12 @@ namespace BIT.Mocks
         public string RetDishImageByName(string dishName)
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Name == dishName);
-            return dish.Img;
+            if(dish != null) 
+            { return dish.Img; }
+            else
+            {
+                return "Unluck";
+            }
         }
 
         public string RetDishImageById(int id)

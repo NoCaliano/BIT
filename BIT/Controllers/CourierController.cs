@@ -26,18 +26,36 @@ namespace BIT.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Orders()
         {
-            return View();
+            var orders = _context.Orders.Where(o => o.Status == OrderStatus.New && o.CourId == null).ToList();
+            return View(orders);
+        }
+
+        public IActionResult MyDeliveries()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
+
+            if (cour != null)
+            {
+                var orders = _context.Orders.Where(o => o.CourId == cour.Id.ToString()).ToList();
+
+                return View(orders);
+            }
+            return NotFound();
         }
 
         public IActionResult Info()
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
+            return View(cour);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStatus(int ordId, string newStatus)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int ordId, OrderStatus newStatus)
         {
             var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -50,9 +68,11 @@ namespace BIT.Controllers
                 if (cour != null)
                 {
                     var upord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
-                    if (upord.Status == "Delivered")
+                    if (upord.Status == OrderStatus.Delivered)
                     {
-                        cour.Delievered++;
+                        var deliveredCount = _context.Orders.Count(o =>o.CourId == cour.Id.ToString() && o.Status == OrderStatus.Delivered);
+
+                        cour.Delievered = deliveredCount;
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -60,7 +80,7 @@ namespace BIT.Controllers
                 {
                     return NotFound();
                 }
-                return RedirectToAction("Index", "Courier");
+                return RedirectToAction("MyDeliveries", "Courier");
 
             }
             else
@@ -70,9 +90,10 @@ namespace BIT.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnWork(string CourUserId)
+        public async Task<IActionResult> OnWork()
         {
-            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == CourUserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
 
             if (cour != null)
             {
@@ -86,9 +107,10 @@ namespace BIT.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> EndWork(string CourUserId)
+        public async Task<IActionResult> EndWork()
         {
-            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == CourUserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
 
             if (cour != null)
             {
@@ -100,89 +122,49 @@ namespace BIT.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> RefuseOrder(int ordId)
+        /* [HttpPost]
+        public async Task<IActionResult> TakeOrder(int ordId)
         {
             var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
-
-            if (ord != null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
+            if(ord != null && ord.CourId == null)
             {
-                var readyToWorkCouriers = GetReadyToWorkCourierNames();
-
-                if (readyToWorkCouriers.Count >= 2)
-                {
-                    var currentCourier = readyToWorkCouriers.First();
-                    var nextCourier = readyToWorkCouriers.Skip(1).First();
-
-                    ord.Courier = nextCourier.Name;
-                    ord.CourId = nextCourier.Id.ToString();
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction("Index", "Courier");
-                }
-                else
-                {
-                    // Handle the case when there are not enough couriers to transfer the order
-                    // You may want to log this event or handle it differently based on your requirements
-                    return RedirectToAction("Index", "Courier");
-                }
+                ord.Courier = cour.Name;
+                ord.CourId = cour.Id.ToString();
+                await _context.SaveChangesAsync();
+                return RedirectToAction("MyDeliveries", "Courier");
             }
-
             return NotFound();
-        }
 
+        } */
 
 
         [HttpPost]
-        public async Task<IActionResult> ToNextCourier(int ordId)
+        public async Task<IActionResult> TakeOrder(int ordId)
         {
-            var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
+            var orderToTake = _context.Orders.FirstOrDefault(o => o.Id == ordId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var courier = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
 
-            if (ord != null)
+            if (orderToTake != null && orderToTake.CourId == null)
             {
-                ord.Courier = GetReadyToWorkCourierNames()[GetReadyToWorkCourierCount()].Name;
+                // Отримайте всі замовлення з такою ж самою адресою
+                var ordersWithSameAddress = _context.Orders
+                    .Where(o => o.ShippingAddress == orderToTake.ShippingAddress && o.CourId == null)
+                    .ToList();
+
+                foreach (var order in ordersWithSameAddress)
+                {
+                    order.Courier = courier.Name;
+                    order.CourId = courier.Id.ToString();
+                }
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Courier");
+                return RedirectToAction("MyDeliveries", "Courier");
             }
 
             return NotFound();
-        }
-        /*
-        [HttpPost]
-        public async Task<IActionResult> ChangeVeh(int userId)
-        {
-            var ord = _context.Orders.FirstOrDefault(o => o.Id == ordId);
-
-            if (ord != null)
-            {
-                ord.Courier = GetReadyToWorkCourierNames().Last();
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Courier");
-            }
-
-            return NotFound();
-        }
-        */
-
-        public int GetReadyToWorkCourierCount()
-        {
-            var count = _context.Couriers
-                .Count(c => c.ReadyToWork == true && c.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            return count;
-        }
-
-        public List<Courier> GetReadyToWorkCourierNames()
-        {
-            var cour = _context.Couriers.FirstOrDefault(o => o.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var readyToWorkCouriers = _context.Couriers
-                .Where(c => c.ReadyToWork == true && c.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-                .ToList();
-
-            if (cour != null)
-            {
-                readyToWorkCouriers.Add(cour);
-            }
-            return readyToWorkCouriers;
         }
 
 

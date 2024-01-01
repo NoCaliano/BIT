@@ -6,30 +6,30 @@
 @if (Carta.IsCartNotEmpty(Model.CartId))
 {
     <form asp-action="Confirm" asp-controller="ShopCart" method="post">
-    <input type="hidden" asp-for="CartId" name="cartId" />
+        <input type="hidden" asp-for="CartId" name="cartId" />
 
-    <label asp-for="PaymentMethod">Патіжний спосіб:</label>
-    <input asp-for="PaymentMethod" class="form-control" />
-    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+        <label asp-for="PaymentMethod">Патіжний спосіб:</label>
+        <input asp-for="PaymentMethod" class="form-control" />
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
 
-    <label asp-for="Notes">Замітки</label>
-    <input asp-for="Notes" class="form-control" />
-    <span asp-validation-for="Notes" class="text-danger"></span>
+        <label asp-for="Notes">Замітки</label>
+        <input asp-for="Notes" class="form-control" />
+        <span asp-validation-for="Notes" class="text-danger"></span>
 
-    <label asp-for="ShippingAdrees">Адреса доставки</label>
-    <input asp-for="ShippingAdrees" class="form-control" />
-    <span asp-validation-for="ShippingAdrees" class="text-danger"></span>
+        <label asp-for="ShippingAdrees">Адреса доставки</label>
+        <input asp-for="ShippingAdrees" class="form-control" />
+        <span asp-validation-for="ShippingAdrees" class="text-danger"></span>
 
-    <label asp-for="PhoneNumber">Телефон</label>
-    <input asp-for="PhoneNumber" class="form-control" />
-    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        <label asp-for="PhoneNumber">Телефон</label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
 
-    <button type="submit">Confirm Order</button>
+        <button type="submit">Confirm Order</button>
     </form>
 }
 else
 {
-    
+
 }
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

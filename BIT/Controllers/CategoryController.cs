@@ -1,4 +1,5 @@
 ﻿using BIT.DataStuff;
+using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace BIT.Controllers
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly AppDbContext _context;
-
+        private const int DispalayedAmount = 9;
 
         public CategoryController(ILogger<CategoryController> logger, AppDbContext context)
         {
@@ -24,24 +25,38 @@ namespace BIT.Controllers
             return View();
         }
 
-        public IActionResult Donuts()
+        public async Task<IActionResult> Donuts(int pageNumber = 1)
         {
-            return View();
+            var donutsDishes = _context.Dishes.Where(d => d.Category == "Donuts");
+            var paginatedList = await PaginatedList<Dish>.CreateAsync(donutsDishes, pageNumber, DispalayedAmount);
+
+            return View(paginatedList);
         }
 
-        public IActionResult Cakes()
+        public async Task<IActionResult> Sets(int pageNumber = 1)
         {
-            return View();
+            var setsDishes = _context.Dishes.Where(d => d.Category == "Sets");
+            var paginatedList = await PaginatedList<Dish>.CreateAsync(setsDishes, pageNumber, DispalayedAmount);
+
+            return View(paginatedList);
         }
 
-        public IActionResult Pizza()
+        public async Task<IActionResult> Pizza(int pageNumber = 1)
         {
-            return View();
+            var pizzaDishes = _context.Dishes.Where(d => d.Category == "Pizza");
+            var paginatedList = await PaginatedList<Dish>.CreateAsync(pizzaDishes, pageNumber, DispalayedAmount);
+
+            return View(paginatedList);
         }
 
-        public IActionResult Sushi()
+
+        public async Task<IActionResult> Sushi(int pageNumber = 1)
         {
-            return View();
+            var sushiDishes = _context.Dishes.Where(d => d.Category == "Sushi");
+            var paginatedList = await PaginatedList<Dish>.CreateAsync(sushiDishes, pageNumber, DispalayedAmount);
+
+            return View(paginatedList);
         }
+
     }
 }

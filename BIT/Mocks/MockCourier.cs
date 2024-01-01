@@ -12,5 +12,10 @@ namespace BIT.Mocks
             _context = context;
         }
         public IEnumerable<Courier> Couriers => _context.Couriers.ToList();
+
+        public bool ReadyCouriersCount()
+        {
+            return _context.Couriers.Any(c => c.ReadyToWork == true);
+        }
     }
 }

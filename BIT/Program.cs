@@ -18,6 +18,7 @@ builder.Services.AddScoped<IAllUsers, MockUser>();
 builder.Services.AddScoped<IAllRoles, MockRole>();
 builder.Services.AddScoped<IAllOrders, MockOrder>();
 builder.Services.AddScoped<IAllCouriers, MockCourier>();
+builder.Services.AddScoped<IAllCategories, MockCategory>();
 builder.Services.AddScoped<IAllRequisitions, MockRequisition>();
 builder.Services.AddScoped<IAllDishData, MockData>();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)

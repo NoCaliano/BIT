@@ -21,5 +21,6 @@ namespace BIT.ViewModels
 
         [RegularExpression(@"^[a-zA-Z0-9\s,'-]*$", ErrorMessage = "Дозволені лише літери, цифри та деякі спецсимволи.")]
         public string? Notes { get; set; }
+
     }
 }

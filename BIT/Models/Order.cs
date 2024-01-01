@@ -33,7 +33,15 @@ namespace BIT.Models
         [Column("Кур'єр")]
         public string? Courier { get; set; }
         [Column("Статус")]
-        public string Status { get; set; }
+        public OrderStatus Status { get; set; }
         public string? CourId { get; set; }
+    }
+
+    public enum OrderStatus
+    {
+        New,
+        Processing,
+        Delivered,
+        Canceled
     }
 }

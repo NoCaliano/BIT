@@ -1,4 +1,5 @@
 ﻿using BIT.DataStuff;
+using BIT.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -90,7 +91,7 @@ namespace BIT.Controllers
 
             // Знаходимо дані по доставках для конкретного кур'єра
             var deliveriesData = _context.Orders
-                .Where(o => o.CourId == courier.Id.ToString() && o.Status == "Delivered")
+                .Where(o => o.CourId == courier.Id.ToString() && o.Status == OrderStatus.Delivered)
                 .GroupBy(o => o.OrderDate.Date)
                 .Select(group => new
                 {

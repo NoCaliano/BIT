@@ -33,18 +33,23 @@ namespace BIT.Controllers
             return View();
         }
 
-        public IActionResult CartForm()
+        [HttpGet]
+        public async Task<IActionResult> CartForm()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
             var cart = _context.Carts.Include(c => c.CartItems)
                                      .ThenInclude(ci => ci.Dish)
                                      .FirstOrDefault(c => c.UserId == userId);
-
+            
             CartDetailsViewModel cartDetailsViewModel = new CartDetailsViewModel()
-            {
-                CartId = cart.Id
-            };
+            {                   
+               CartId = cart.Id,                   
+               PhoneNumber = user.PhoneNumber,                    
+               ShippingAdrees = user.Address,                          
+            };     
             return PartialView("_CartForm", cartDetailsViewModel);
+            
         }
 
         public IActionResult PartCart()
@@ -58,7 +63,7 @@ namespace BIT.Controllers
             return PartialView("_MyCart", cart);
         }
 
-
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToListOfCartItems(int dishId)
         {
             var dish = _context.Dishes.FirstOrDefault(d => d.Id == dishId);
@@ -107,7 +112,7 @@ namespace BIT.Controllers
             {
                 cart = new Cart
                 {
-                    UserId = userId,
+                    UserId = userId!,
                     CartItems = new List<CartItem>() { item },
                     GrandTotal = item.Dish.Price
                 };
@@ -130,7 +135,7 @@ namespace BIT.Controllers
                 cart.GrandTotal = cart.CartItems.Sum(ci => ci.Quantity * ci.Dish.Price);
                 _context.SaveChanges();
             }
-
+            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
@@ -164,6 +169,7 @@ namespace BIT.Controllers
                     }
                 }
             }
+            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
 
             return PartialView("_MyCart", cart);
@@ -188,7 +194,7 @@ namespace BIT.Controllers
                     _context.SaveChanges();
                 }
             }
-
+            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
 
             return PartialView("_MyCart", cart);
@@ -214,31 +220,17 @@ namespace BIT.Controllers
 
                 }
             }
+            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
-
-        public async Task<IActionResult> OrderDetails(int CartId)
-        {
-            var cart = await _context.Carts.Include(c => c.CartItems)
-                                            .ThenInclude(ci => ci.Dish)
-                                            .FirstOrDefaultAsync(c => c.Id == CartId);
-
-            CartDetailsViewModel det = new CartDetailsViewModel()
-            {
-                CartId = cart.Id
-            };
-
-            return View(det);
-        }
-
-
 
         //Метод можна покращити
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Confirm(CartDetailsViewModel d)
-        {
+        {   
+            
             if (ModelState.IsValid)
             {
                 var cart = await _context.Carts
@@ -248,7 +240,9 @@ namespace BIT.Controllers
 
                 var orderDate = DateTime.Now;
 
-                string CustName = User.Identity.Name;
+                string NameOfUser = "Guest";
+                var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                if (user.FirstName != null) { NameOfUser = user.FirstName; }
 
                 if (cart != null)
                 {
@@ -266,10 +260,9 @@ namespace BIT.Controllers
                                 Category = dish.Dish.Category,
                                 ProductName = dish.Dish.Name,
                                 TotalAmount = dish.Dish.Price * dish.Quantity,
-                                CustomerName = CustName,
-                                Status = "New",
+                                CustomerName = NameOfUser,
+                                Status = OrderStatus.New,
                                 OrderDate = orderDate,
-
                                 ShippingAddress = d.ShippingAdrees,
                                 Phonenumber = d.PhoneNumber,
                                 PaymentMethod = d.PaymentMethod,

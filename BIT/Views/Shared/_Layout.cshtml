@@ -32,9 +32,9 @@
                     {
                         <h2 class="fuck"><a href="@Url.Action("Dashboard", "Admin")">Адмінка</a></h2>
                     }
-                    @if (User.IsInRole("Courier") || (User.IsInRole("Admin")))
+                    @if (User.IsInRole("Courier"))
                     {
-                        <h2 class="fuck"><a href="@Url.Action("Index", "Courier")">Кур'єрство</a></h2>
+                        <h2 class="fuck"><a href="@Url.Action("Orders", "Courier")">Кур'єрство</a></h2>
                     }
                     @if (User.Identity.IsAuthenticated)
                     {

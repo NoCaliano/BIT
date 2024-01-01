@@ -1,0 +1,110 @@
+﻿@model List<Order>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ваші доставки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        form {
+            display: inline-block;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 2px 2px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+    <h2>Ваші доставки</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Страва</th>
+                <th>Кількість</th>
+                <th>Клієнт</th>
+                <!-- Додайте інші заголовки стовпців за потребою -->
+                <th>Статус</th>
+                <th>Оновити статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.ProductName</td>
+                    <td>@order.Quanity</td>
+                    <td>@order.CustomerName</td>
+                    <!-- Додайте інші стовпці за потребою -->
+                    <td>@order.Status</td>
+                    <td>
+                        @if (order.Status == OrderStatus.New || order.Status == OrderStatus.Processing)
+                        {
+                            <form asp-action="UpdateStatus" asp-controller="Courier" method="post">
+                                <input type="hidden" name="ordId" value="@order.Id" />
+                                <label for="newStatus">Новий статус:</label>
+                                <select name="newStatus" id="newStatus">
+                                    <option value="Processing">В обробці</option>
+                                    <option value="Delivered">Доставлено</option>
+                                </select>
+                                <button type="submit">Оновити статус</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

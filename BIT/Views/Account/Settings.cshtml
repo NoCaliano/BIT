@@ -1,16 +1,15 @@
-﻿@using BIT.Data
-@using BIT.Interfaces
-@using Microsoft.AspNetCore.Identity
-@using BIT.Areas.Identity.Data
-@inject IAllUsers UserBase
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@model Settings
+﻿@using BIT.ViewModels
+@model SettingViewModel
 
 <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
     table {
         border-collapse: collapse;
         width: 100%;
+        margin-bottom: 20px;
     }
 
     th, td {
@@ -22,6 +21,35 @@
     tr:nth-child(even) {
         background-color: #f2f2f2;
     }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #45a049;
+        }
 </style>
 
 <table>
@@ -32,84 +60,77 @@
         <th>Адреса</th>
         <th>Номер телефону</th>
     </tr>
-    @foreach (var user in UserBase.Users)
-    {
-        if (user.Id == UserManager.GetUserId(User))
-        {
-            if(user.FirstName == null)
-            {
-                <form asp-action="SetName" asp-controller="Account" method="post">
-                    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
-                    <label asp-for="FirstName"></label>
-                    <input asp-for="FirstName" id="Name" name="Name" required />
-                    <span asp-validation-for="FirstName"></span>
-                    <button type="submit">Set your name</button>
-                </form>
-            }
-            if (user.LastName == null)
-            {
-                <form asp-action="SetLastName" asp-controller="Account" method="post">
-                    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
-                    <label asp-for="LastName"></label>
-                    <input asp-for="LastName" id="LastName" name="LastName" required />
-                    <span asp-validation-for="LastName"></span>
-                    <button type="submit">Set your lastname</button>
-                </form>
-            }
-
-            <tr>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>@user.Email</td>
-                <td>@user.Address</td>
-                <td>@user.PhoneNumber</td>
-            </tr>
-            break;
-        }
-    }
+    <tr>
+        <td>@Model.FirstName</td>
+        <td>@Model.LastName</td>
+        <td>@Model.Email</td>
+        <td>@Model.Address</td>
+        <td>@Model.PhoneNumber</td>
+    </tr>
 </table>
+@if (Model.FirstName == null)
+{
+    <form asp-action="SetName" asp-controller="Account" method="post">
+    <label asp-for="FirstName">Нове ім'я</label>
+    <input asp-for="FirstName" required />
+    <span asp-validation-for="FirstName"></span>
+    <button type="submit">Змінити ім'я</button>
+</form>
+}
 
+@if (Model.LastName == null)
+{
+    <form asp-action="SetLastName" asp-controller="Account" method="post">
+    <label asp-for="LastName">Нове прізвище</label>
+    <input asp-for="LastName" required />
+    <span asp-validation-for="LastName"></span>
+    <button type="submit">Змінити прізвище</button>
+</form>
+}
 
 <form asp-action="ChangeEmail" asp-controller="Account" method="post">
-    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
     <label asp-for="Email"></label>
-    <input asp-for="Email" id="NewEmail" name="NewEmail" required />
+    <input asp-for="Email" id="NewEmail" name="Email" required />
     <span asp-validation-for="Email"></span>
     <button type="submit">Change Email</button>
 </form>
 
 
+
 <form asp-action="ChangePassword" asp-controller="Account" method="post">
-    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
-
-    <label for="OldPassword">Old Password</label>
-    <input asp-for="Password" id="OldPassword" name="OldPassword" required />
+    <label asp-for="Password">Поточний пароль</label>
+    <input asp-for="Password" type="password" required />
     <span asp-validation-for="Password"></span>
 
-    <label for="Password">New Password</label>
-    <input asp-for="Password" id="NewPassword" name="NewPassword" required />
-    <span asp-validation-for="Password"></span>
+    <label asp-for="NewPassword">Новий пароль</label>
+    <input asp-for="NewPassword" type="password" required />
+    <span asp-validation-for="NewPassword"></span>
 
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <label asp-for="ConfirmPassword">Підтвердження паролю</label>
+    <input asp-for="ConfirmPassword" type="password" required />
+    <span asp-validation-for="ConfirmPassword"></span>
 
-    <button type="submit">Change Password</button>
-
+    <button type="submit">Змінити пароль</button>
 </form>
+
+
 
 
 <form asp-action="ChangeAddress" asp-controller="Account" method="post">
-    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
-    <label asp-for="Address"></label>
-    <input asp-for="Address" id="NewAddress" name="NewAddress" required />
+    <label asp-for="Address">Нова адреса</label>
+    <input asp-for="Address" required />
     <span asp-validation-for="Address"></span>
-    <button type="submit">Change address</button>
+
+    <button type="submit">Змінити адресу</button>
 </form>
 
+
 <form asp-action="ChangePhone" asp-controller="Account" method="post">
-    <input type="hidden" id="userId" name="userId" value="@UserManager.GetUserId(User)" />
-    <label asp-for="PhoneNumber"></label>
-    <input asp-for="PhoneNumber" id="NewPhone" name="NewPhone" required />
+    <label asp-for="PhoneNumber">Новий номер телефону</label>
+    <input asp-for="PhoneNumber" required />
     <span asp-validation-for="PhoneNumber"></span>
-    <button type="submit">Change phone number</button>
+
+    <button type="submit">Змінити номер телефону</button>
 </form>
+
 

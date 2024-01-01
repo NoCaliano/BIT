@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Drawing.Printing;
 
 namespace BIT.Controllers
 {
@@ -12,7 +13,7 @@ namespace BIT.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
-
+        private const int DispalayedAmount = 9;
         private static readonly Cart cart = new Cart();
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
@@ -20,9 +21,10 @@ namespace BIT.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
+        public async Task<IActionResult> Index(int pageNumber=1)
+        {            
+
+            return View(await PaginatedList<Dish>.CreateAsync(_context.Dishes, pageNumber, DispalayedAmount));
         }
 
         public IActionResult Privacy()

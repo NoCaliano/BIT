@@ -17,6 +17,13 @@ namespace BIT.DataStuff
             optionsBuilder.UseSqlServer(_config.GetConnectionString("AuthDbContextConnection"));
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>();
+        }
+
         public DbSet<Category> Categories { get; set; }
         public DbSet<Dish> Dishes { get; set; }
         public DbSet<Order> Orders { get; set; }

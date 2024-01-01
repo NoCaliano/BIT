@@ -1,5 +1,4 @@
 ﻿@model PaginatedList<Dish>
-
 <link rel="stylesheet" href="~/css/Partial.css" asp-append-version="true" />
 
 <button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
@@ -8,16 +7,16 @@
     <div class="row">
         @foreach (var dish in Model)
         {
-            if (dish.Category == "Donuts")
+            if (dish.Category == "Sets")
             {
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                    <a href="/Home/Details/@dish.Id">
-                        <img src="@dish.Img" class="card-img-top" alt="невезіння" />
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">@dish.Name</h5>
-                        <p class="card-text">Ціна: @dish.Price</p>
+                        <a href="/Home/Details/@dish.Id">
+                            <img src="@dish.Img" class="card-img-top" alt="невезіння" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">@dish.Name</h5>
+                            <p class="card-text">Ціна: @dish.Price</p>
 
                             <form asp-controller="Order" asp-action="PartTest" class="order-form">
                                 <input type="hidden" name="dishId" value="@dish.Id" />
@@ -29,9 +28,9 @@
                                 <input type="hidden" name="dishId" value="@dish.Id" />
                                 <button type="submit" class="btn btn-success">Додати в корзину</button>
                             </form>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
         }
     </div>
@@ -46,12 +45,12 @@
         var NextDisabled = !Model.NextPage ? "disabled" : "";
     }
 
-    <a asp-action="Donuts" asp-route-pageNumber="@(Model.PageIndex-1)"
+    <a asp-action="Sets" asp-route-pageNumber="@(Model.PageIndex-1)"
        class="btn btn-default @PrevDisabled">
         Previous
     </a>
 
-    <a asp-action="Donuts" asp-route-pageNumber="@(Model.PageIndex+1)"
+    <a asp-action="Sets" asp-route-pageNumber="@(Model.PageIndex+1)"
        class="btn btn-default @NextDisabled">
         Next
     </a>

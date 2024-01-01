@@ -1,0 +1,38 @@
+﻿
+#cartContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
+    overflow-y: auto; /* Включити прокрутку при необхідності */
+    width: 300px; /* Задайте ширину відповідно до ваших потреб */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: none; /* По замовчуванню ховаємо контейнер */
+}
+
+
+#partial-load {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: none;
+    z-index: 999; /* Додайте z-index, щоб мати вищий зрівень ніж інші елементи на сторінці */
+}
+
+#showCartBtn {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 1000; /* Це значення може бути на ваш вибір, залежно від потреб вашого додатка */
+    font-size: 24px; /* Розмір шрифту кнопки */
+    padding: 10px 20px;
+}
+

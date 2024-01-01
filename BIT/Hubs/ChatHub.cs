@@ -14,5 +14,11 @@ namespace BIT.Hubs
             // я в потоці життя просто
             await Clients.All.SendAsync("CartUpdated");          
         }
+
+        public async Task LessThenWas()
+        {
+            // я в потоці життя просто
+            await Clients.All.SendAsync("CartMayEmpty");
+        }
     }
 }

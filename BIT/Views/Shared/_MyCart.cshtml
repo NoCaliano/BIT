@@ -71,6 +71,9 @@
                 </div>
             </div>
         }
+        <form method="post" action="@Url.Action("Checkout", "ShopCart")">
+            <button id="checkout-button" type="submit">Перейти до оформлення</button>
+        </form>
     </div>
 
     <p class="grand-total">Загальна сума замовлення: @Model.GrandTotal</p>
@@ -80,10 +83,6 @@ else
 {
     <p>Вашик кошик порожній, крінж повний</p>
 }
-
-<form method="post" action="@Url.Action("Checkout", "ShopCart")">
-    <button id="checkout-button" type="submit">Перейти до оформлення</button>
-</form>
 
 
 <script>

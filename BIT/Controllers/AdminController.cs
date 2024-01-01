@@ -28,6 +28,12 @@ namespace BIT.Controllers
         {
             return View("~/Views/Admin/Dashboard.cshtml");
         }
+
+        public IActionResult Orders()
+        {
+            return View();
+        }
+
         public IActionResult FindOrder()
         {
             return View();
@@ -58,11 +64,8 @@ namespace BIT.Controllers
         {
             return View();
         }
-        public IActionResult Orders()
-        {
-            return View();
-        }
 
+        
         public IActionResult AddNewDish()
         {
             ViewData["categories"] = new SelectList(_context.Categories.ToList(), "Name", "Name");
@@ -74,6 +77,10 @@ namespace BIT.Controllers
             return View();
         }
 
+        public IActionResult EditDish() 
+        {
+            return View();
+        }
         public IActionResult AddCategory()
         {
             return View();
@@ -121,7 +128,7 @@ namespace BIT.Controllers
             _context.Dishes.Remove(dish);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home"); // Перенаправлення до головної сторінки або іншої відповідної дії
+            return RedirectToAction("DeleteDish", "Admin"); // Перенаправлення до головної сторінки або іншої відповідної дії
         }
 
 
@@ -253,16 +260,49 @@ namespace BIT.Controllers
             }
 
             // Шукаємо за номером телефону
-            var ord = _context.Orders.FirstOrDefault(p => p.Phonenumber == IdOrPhone);
-            if (ord != null)
+            var orders = _context.Orders.Where(p => p.Phonenumber == IdOrPhone).ToList();
+
+            if (orders.Count() > 0)
             {
-                return PartialView("_OrderData", ord);
+                return PartialView("_ListOfOrdersData", orders);
             }
 
             // Якщо не вдалося знайти за Id і за номером телефону, повертаємо відповідь про помилку
             return PartialView("_UserNotFound");
         }
 
+        [HttpPost]
+        public IActionResult Edit(int dishId)
+        {
+            var dish = _context.Dishes.FirstOrDefault(p => p.Id == dishId);
+            if (dish != null)
+            {
+                return PartialView("_EditDish", dish);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditThis(Dish model)
+        {
+            
+            var existingDish = await _context.Dishes.FindAsync(model.Id);
+            if (existingDish != null)
+            {
+                existingDish.Img = model.Img;
+                existingDish.Category = model.Category;
+                existingDish.Calories = model.Calories;
+                existingDish.IsAvaileble = model.IsAvaileble;
+                existingDish.Description = model.Description;
+                existingDish.IsFavorite = model.IsFavorite;
+                existingDish.Price = model.Price;
+                existingDish.Name = model.Name;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Home", "Welcome");
+            }
+
+            return PartialView("_EditDish", model);
+        }
 
     }
 }

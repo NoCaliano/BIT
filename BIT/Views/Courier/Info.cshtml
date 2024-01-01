@@ -1,24 +1,37 @@
-﻿@using BIT.DataStuff
-@using BIT.Interfaces
-@using Microsoft.AspNetCore.Identity
-@using BIT.Areas.Identity.Data
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject IAllCouriers CourBase
+﻿@model Courier
 
-
-@foreach(var cour in CourBase.Couriers)
-{
-    if (cour.UserId == UserManager.GetUserId(User))
-    {
-        <p>Ім'я @cour.Name</p>
-        <p>Прізвище @cour.LastName</p>
-        <p>Вид транспорту: @cour.VehicleType</p>
-        <p>Ваша зарплатня: @cour.Salary</p>
-        <p>Остання виплата: @cour.LastSalary</p>
-        <p>Всього виконано доставок: @cour.Delievered</p>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #495057;
     }
-}
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    canvas {
+        max-width: 400px;
+        max-height: 200px;
+        margin-top: 20px;
+    }
+</style>
+
+
+<p>Ім'я @Model.Name</p>
+<p>Прізвище @Model.LastName</p>
+<p>Вид транспорту: @Model.VehicleType</p>
+<p>Ваша зарплатня: @Model.Salary</p>
+<p>Остання виплата: @Model.LastSalary</p>
+<p>Всього виконано доставок: @Model.Delievered</p>
+
 <canvas id="MyChart1" style="max-width: 400px; max-height: 200px;"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

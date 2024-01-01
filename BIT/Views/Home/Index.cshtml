@@ -1,45 +1,12 @@
-﻿@using BIT.DataStuff
-@using BIT.Interfaces
-@using BIT.Controllers
-@inject IAllDishes DishBase
+﻿@model PaginatedList<Dish>
 
 
-<style>
-    #cartContainer {
-        position: fixed;
-        top: 0;
-        right: 0;
-        max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
-        overflow-y: auto; /* Включити прокрутку при необхідності */
-        width: 300px; /* Задайте ширину відповідно до ваших потреб */
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        display: none; /* По замовчуванню ховаємо контейнер */
-    }
-</style>
-
-<style>
-    #partial-load {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-height: 80vh;
-        overflow-y: auto;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        display: none;
-        z-index: 999; /* Додайте z-index, щоб мати вищий зрівень ніж інші елементи на сторінці */
-    }
-</style>
-
-<button id="showCartBtn" class="btn btn-info mt-4">Моя корзина</button>
+<link rel="stylesheet" href="~/css/Partial.css" asp-append-version="true" />
+<button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
 
 <div class="container">
     <div class="row">
-        @foreach (var dish in DishBase.Dishes)
+        @foreach (var dish in Model)
         {
             <div class="col-md-4 mb-4">
                 <div class="card">
@@ -50,13 +17,13 @@
                         <h5 class="card-title">@dish.Name</h5>
                         <p class="card-text">Ціна: @dish.Price</p>
 
-                        <form action="/Order/PartTest" class="order-form">
+                        <form asp-controller="Order" asp-action="PartTest" class="order-form">
                             <input type="hidden" name="dishId" value="@dish.Id" />
                             <button type="button" class="btn btn-success order-btn">Замовити</button>
                         </form>
 
 
-                        <form method="post" action="/ShopCart/AddToListOfCartItems">
+                        <form asp-controller="ShopCart" asp-action="AddToListOfCartItems">
                             <input type="hidden" name="dishId" value="@dish.Id" />
                             <button type="submit" class="btn btn-success">Додати в корзину</button>
                         </form>
@@ -71,9 +38,29 @@
         <!-- Вміст часткового представлення корзини буде тут -->
     </div>
 
+    
+    @{
+        var PrevDisabled = !Model.PreviousPage ? "disabled" : "";
+        var NextDisabled = !Model.NextPage ? "disabled" : "";
+    }
+
+    <a asp-action="index" asp-route-pageNumber="@(Model.PageIndex-1)"
+       class="btn btn-default @PrevDisabled">
+        Previous
+    </a>
+
+    <a asp-action="index" asp-route-pageNumber="@(Model.PageIndex+1)"
+       class="btn btn-default @NextDisabled">
+        Next
+    </a>
 
 </div>
 
+
+
+<div id="partial-load"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.12/signalr.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -87,7 +74,7 @@
             // Вивести часткове представлення замовлення на сторінку
             $.ajax({
                 url: form.attr('action'),
-                type: form.attr('method'),
+                type: 'GET',
                 data: { dishId: dishId },
                 success: function (partialView) {
                     partialLoadContainer.html(partialView).fadeIn();
@@ -139,8 +126,6 @@
     });
 </script>
 
-<div id="partial-load"></div>
-
 <script>
     $('#partial-load').on('submit', 'form', function (e) {
         e.preventDefault(); // Запобігає стандартному поданню форми
@@ -164,3 +149,33 @@
         });
     });
 </script>
+
+
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/cartHub").build();
+
+    connection.on("CartUpdated", function () {
+        onCartUpdated();
+    });
+
+    connection.start().then(function () {
+        console.log("Connected to CartHub");
+    }).catch(function (err) {
+        console.error("Error connecting to CartHub: " + err.toString());
+    });
+
+    function onCartUpdated() {
+        console.log('CartUpdated handler called');
+        $.ajax({
+            url: '/ShopCart/PartCart',
+            type: 'GET',
+            success: function (data) {
+                $('#cartContainer').html(data);
+            },
+            error: function () {
+                console.error('Failed to load PartCart');
+            }
+        });
+    }
+</script>
+

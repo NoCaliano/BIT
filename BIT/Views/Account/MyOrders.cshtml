@@ -1,32 +1,104 @@
-﻿@using BIT.DataStuff
-@using BIT.Interfaces
-@using Microsoft.AspNetCore.Identity
-@using BIT.Areas.Identity.Data
-
-@inject IAllOrders OrderBase
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+﻿@model List<Order>
 
 <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
     .table {
         border-collapse: collapse;
         width: 100%;
+        margin-top: 20px;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
     }
 
-        .table th, .table td {
-            border: 1px solid #dddddd;
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
             text-align: left;
-            padding: 8px;
+            padding: 12px;
         }
 
     .details {
         display: none;
+        background-color: #f1f1f1;
     }
 
     .toggle-details {
         cursor: pointer;
-        color: blue;
+        color: #007bff;
+        font-weight: bold;
     }
+
+        .toggle-details:hover {
+            text-decoration: underline;
+        }
+
+    .btn-cancel {
+        background-color: #dc3545;
+        color: #fff;
+        border: 1px solid #dc3545;
+    }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+            border: 1px solid #c82333;
+        }
+
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    h1.display-4 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+            text-align: left;
+            padding: 12px;
+        }
+
+    .details {
+        display: none;
+        background-color: #f1f1f1;
+    }
+
+    .toggle-details {
+        cursor: pointer;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+        .toggle-details:hover {
+            text-decoration: underline;
+        }
+
+    .btn-cancel {
+        background-color: #dc3545;
+        color: #fff;
+        border: 1px solid #dc3545;
+    }
+
+        .btn-cancel:hover {
+            background-color: #c82333;
+            border: 1px solid #c82333;
+        }
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -37,32 +109,30 @@
     <p>Дізнайтеся більше про <a href="https://docs.microsoft.com/aspnet/core">створення веб-додатків з ASP.NET Core</a>.</p>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Продукт</th>
-                    <th scope="col">Кількість</th>
-                    <th scope="col">Адреса</th>
-                    <th scope="col">Дата замовлення</th>
-                    <th scope="col">Сума до сплати</th>
-                    <th scope="col">Коментар</th>
-                    <th scope="col">Метод оплати</th>
-                    <th scope="col">Кур'єр</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Скасувати</th>
-                    <!-- Додайте інші заголовки за необхідності -->
-                </tr>
-                <!-- Заголовки стовпчиків -->
-            </thead>
-            <tbody>
-                @foreach (var order in OrderBase.Orders)
-                {
-                    if (order.UserId == UserManager.GetUserId(User))
+<<div class="container">
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Продукт</th>
+                        <th scope="col">Кількість</th>
+                        <th scope="col">Адреса</th>
+                        <th scope="col">Дата замовлення</th>
+                        <th scope="col">Сума до сплати</th>
+                        <th scope="col">Коментар</th>
+                        <th scope="col">Метод оплати</th>
+                        <th scope="col">Кур'єр</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Скасувати</th>
+                        <!-- Додайте інші заголовки за необхідності -->
+                    </tr>
+                    <!-- Заголовки стовпчиків -->
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
                     {
-                        <tr>
-                            <td class="toggle-details" data-target="#details-@order.Id" data-toggle="collapse">&#x25BC;</td>
+                        <tr>                      
                             <td>@order.ProductName</td>
                             <td>@order.Quanity</td>
                             <td>@order.ShippingAddress</td>
@@ -72,10 +142,10 @@
                             <td>@order.PaymentMethod</td>
                             <td>@order.Courier</td>
                             <td>@order.Status</td>
-                            @if (order.Status == "New" || order.Status == "InProcess")
+                            @if (order.Status == OrderStatus.New || order.Status == OrderStatus.Processing)
                             {
                                 <td>
-                                    <form method="post" action="/Account/CancelOrder">
+                                    <form asp-action="CancelOrder" asp-controller="Account" method="post">
                                         <input type="hidden" name="ordId" value="@order.Id" />
                                         <button type="submit" class="btn btn-success">Скасувати</button>
                                     </form>
@@ -88,12 +158,12 @@
                             </td>
                         </tr>
                     }
-                }
-
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
 
 <script>
     $(document).ready(function () {

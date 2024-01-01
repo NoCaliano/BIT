@@ -30,6 +30,7 @@ namespace BIT.Controllers
             return View();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> PartTest(int dishId)
         {
@@ -50,13 +51,13 @@ namespace BIT.Controllers
             return NotFound();
         }
 
-      
-        //Метод треба буде ще доробити
+              
         [HttpPost]        
         [ValidateAntiForgeryToken]
         
         public async Task<IActionResult> OrderDone(OrderDetailsViewModel detail) 
         {
+
             if (ModelState.IsValid)
             {
                 var dish = _context.Dishes.FirstOrDefault(d => d.Id == detail.DishId);
@@ -78,9 +79,7 @@ namespace BIT.Controllers
                         Notes = detail.Notes,
                         ProductName = dish.Name,
                         Category = dish.Category,
-                        Status = "New",
-                        Courier = GetReadyToWorkCouriers()[0].Name,
-                        CourId = GetReadyToWorkCouriers()[0].Id.ToString(),
+                        Status = OrderStatus.New,
                     };
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
@@ -96,27 +95,6 @@ namespace BIT.Controllers
                 return PartialView("_SingleOrder", detail);
             }
         }
-
-        public List<Courier> GetReadyToWorkCouriers()
-        {
-            var readyToWorkCouriers = _context.Couriers
-                .Where(c => c.ReadyToWork == true)
-                .ToList();
-
-            var courierIdsWithActiveOrders = _context.Orders
-                .Where(order => order.Status == "InProcess")
-                .GroupBy(order => order.CourId)
-                .Where(group => group.Count() >= 2)
-                .Select(group => group.Key)
-                .ToList();
-
-            var availableCouriers = readyToWorkCouriers
-                .Where(courier => !courierIdsWithActiveOrders.Contains(courier.Id.ToString()))
-                .ToList();
-
-            return availableCouriers;
-        }
-
         
     }
 }
