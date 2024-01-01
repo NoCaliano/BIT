@@ -4,6 +4,7 @@ using BIT.DataStuff;
 using BIT.Hubs;
 using BIT.Interfaces;
 using BIT.Mocks;
+using BIT.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,8 @@ builder.Services.AddScoped<IAllCouriers, MockCourier>();
 builder.Services.AddScoped<IAllCategories, MockCategory>();
 builder.Services.AddScoped<IAllRequisitions, MockRequisition>();
 builder.Services.AddScoped<IAllDishData, MockData>();
+builder.Services.AddScoped<OrderProcessingService>();
+builder.Services.AddHostedService<OrderProcessingHostedService>();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()  // Add roles configuration
     .AddEntityFrameworkStores<AuthDbContext>()
