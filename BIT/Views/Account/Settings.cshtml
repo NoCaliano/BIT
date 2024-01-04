@@ -111,7 +111,11 @@
     <span asp-validation-for="ConfirmPassword"></span>
 
     <button type="submit">Змінити пароль</button>
+
+    <!-- Виводимо валідаційні помилки тільки для форми зміни паролю -->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 </form>
+
 
 
 
@@ -134,3 +138,5 @@
 </form>
 
 
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

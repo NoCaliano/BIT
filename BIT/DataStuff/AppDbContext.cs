@@ -31,5 +31,6 @@ namespace BIT.DataStuff
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Courier> Couriers { get; set; }
         public DbSet<Requisition> Requisitions { get; set; }
+        public DbSet<FeedBack> FeedBacks { get; set; }
     }
 }

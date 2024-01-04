@@ -1,4 +1,5 @@
 ﻿using BIT.Areas.Identity.Data;
+using BIT.Attributes;
 using BIT.DataStuff;
 using BIT.Models;
 using BIT.ViewModels;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 
 namespace BIT.Controllers
 {
-    [Authorize]
+    [CustomAuthorize]
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -97,7 +98,8 @@ namespace BIT.Controllers
         public async Task<IActionResult> ChangePassword(SettingViewModel setting)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (setting.NewPassword != null && setting.Password != null && setting.ConfirmPassword != null) {
+            if (setting.NewPassword != null && setting.Password != null && setting.ConfirmPassword != null)
+            {
 
                 var user = await _userManager.FindByIdAsync(userId);
 
@@ -123,13 +125,19 @@ namespace BIT.Controllers
                     // Повертаємо перегляд разом із моделлю, щоб вивести повідомлення про помилки
                     return View("Settings", new SettingViewModel
                     {
-
+                        // Передаємо модель знову на сторінку, щоб дані залишалися на місці
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Address = user.Address
                     });
-                } 
+                }
             }
-            return View("Settings");
-           
+            // Повертаємо перегляд разом із моделлю, щоб вивести повідомлення про помилки
+            return View("Settings", setting);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

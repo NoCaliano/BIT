@@ -1,4 +1,5 @@
 ﻿using BIT.Areas.Identity.Data;
+using BIT.Attributes;
 using BIT.DataStuff;
 using BIT.Models;
 using BIT.ViewModels;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 
 namespace BIT.Controllers
 {
-    [Authorize]
+    [CustomAuthorize]
     public class OrderController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -44,6 +45,8 @@ namespace BIT.Controllers
                     DishId = dish.Id,
                     PhoneNumber = user.PhoneNumber,
                     ShippingAdrees = user.Address,
+                    Img = dish.Img,
+                    Total = dish.Price
                     
                 };
                 return PartialView("_SingleOrder", d);
@@ -71,7 +74,7 @@ namespace BIT.Controllers
                         Phonenumber = detail.PhoneNumber,
                         ShippingAddress = detail.ShippingAdrees,
                         CustomerName = user.Email,
-                        PaymentMethod = detail.PaymentMethod,
+                        PaymentMethod = detail.PaymentMethod.ToString(),
                         OrderDate = DateTime.Now,
                         TotalAmount = dish.Price,
                         Product = new List<Dish> { dish },

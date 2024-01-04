@@ -7,9 +7,7 @@
 <div class="container">
     <div class="row">
         @foreach (var dish in Model)
-        {
-            if (dish.Category == "Donuts")
-            {
+        {           
                 <div class="col-md-4 mb-4">
                     <div class="card">
                     <a href="/Home/Details/@dish.Id">
@@ -32,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            }
+            
         }
     </div>
 
@@ -46,12 +44,12 @@
         var NextDisabled = !Model.NextPage ? "disabled" : "";
     }
 
-    <a asp-action="Donuts" asp-route-pageNumber="@(Model.PageIndex-1)"
+    <a asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex-1)"
        class="btn btn-default @PrevDisabled">
         Previous
     </a>
 
-    <a asp-action="Donuts" asp-route-pageNumber="@(Model.PageIndex+1)"
+    <a asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex+1)"
        class="btn btn-default @NextDisabled">
         Next
     </a>

@@ -1,26 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace BIT.ViewModels
 {
-    public class CartDetailsViewModel
+    public class CartDetailsViewModel 
     {
         [Required]
         public int CartId { get; set; }
 
-        [Required(ErrorMessage = "Поле 'PaymentMethod' обов'язкове.")]
-        public string PaymentMethod { get; set; }
+        [Display(Name ="Спосіб оплати")]
+        [Required(ErrorMessage = "Поле 'Спосіб оплати' обов'язкове.")]
+        public Payment PaymentMethod { get; set; }
 
-        
-        [Required(ErrorMessage = "Поле 'PhoneNumber' обов'язкове.")]        
-        [Phone(ErrorMessage = "Невірний формат телефонного номера.")]
-        [Display(Name = "Телефон")]       
+
+        [Display(Name = "Телефон")]
+        [Required(ErrorMessage = "Поле 'Телефон' обов'язкове.")]
+        [RegularExpression(@"^\+\d{7,13}$", ErrorMessage = "Телефонний номер повинен бути у форматі '+XXXXXXXXXXXXX', де X - це цифра.")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Поле 'ShippingAdrees' обов'язкове.")]
-        [RegularExpression(@"^[a-zA-Z0-9\s,'-]*$", ErrorMessage = "Дозволені лише літери, цифри та деякі спецсимволи.")]
+        [Display(Name = "Адреса")]
+        [Required(ErrorMessage = "Поле 'Адреса' обов'язкове.")]
+        [MaxLength(70, ErrorMessage = "Максимальна довжина адреси - 70 символів.")]
         public string ShippingAdrees { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z0-9\s,'-]*$", ErrorMessage = "Дозволені лише літери, цифри та деякі спецсимволи.")]
+        [Display(Name = "Замітки")]
+        [MaxLength(100, ErrorMessage = "Максимальна довжина нотаток - 100 символів.")]
         public string? Notes { get; set; }
+
     }
+
 }

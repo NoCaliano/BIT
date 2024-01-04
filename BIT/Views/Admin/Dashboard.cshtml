@@ -9,12 +9,14 @@
 
 <link rel="stylesheet" href="~/css/Admin/Dashboard.css" asp-append-version="true" />
 
-<div style="max-width: 800px; max-height: 200px; margin: 0 auto;">
+<div class="chart-container" style="max-width: 1300px; max-height: 400px; margin: 0 auto;">
     <!-- Перший графік -->
-    <canvas id="MyChart1" style="max-width: 400px; max-height: 200px; float: left;"></canvas>
+    <canvas id="MyChart1" style="max-width: 400px; max-height: 200px; float: right;"></canvas>
+</div>
 
+<div class="chart-container" style="max-width: 1300px; max-height: 400px; margin: 0 auto;">
     <!-- Другий графік -->
-    <canvas id="MyChart2" style="max-width: 400px; max-height: 200px; float: right;"></canvas>
+    <canvas id="MyChart2" style="max-width: 900px; max-height: 400px; float: left;"></canvas>
 </div>
 
 
@@ -26,60 +28,50 @@
                 <tr>
                     <th scope="col">Продукт</th>
                     <th scope="col">Дата замовлення</th>
-                    <th scope="col">Метод оплати</th>
                     <th scope="col">Кур'єр</th>
+                    <th scope="col">Статус</thscope>
                     <!-- Додайте інші заголовки за необхідності -->
                 </tr>
             </thead>
             <tbody>
-                @foreach (var order in OrderBase.Orders)
+                @foreach (var order in OrderBase.LastOrders)
                 {
-                    if (displayedOrdersCount < 10 && order.OrderDate >= DateTime.Now.AddDays(-2))
+                    if (displayedOrdersCount < 5)
                     {
                         <tr>
                             <td>@order.ProductName</td>
                             <td>@order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                            <td>@order.PaymentMethod</td>
                             <td>@order.Courier</td>
+                            <td>@order.Status @if (order.Status == OrderStatus.Delivered)
+                                {
+                                    <text>✅</text>
+                                }
+                                else if(order.Status == OrderStatus.Canceled)
+                                {
+                                    <text>❌</text>
+                                }
+                                else if(order.Status == OrderStatus.Processing)
+                                {
+                                    <text>🔄</text>
+                                }
+                                else if(order.Status == OrderStatus.New)
+                                {
+                                    <text>🆕</text>
+                                }
+                            </td>
                             <!-- Додайте інші комірки з даними за необхідності -->
                         </tr>
                         displayedOrdersCount++;
+                    }
+                    else 
+                    {
+                        break;
                     }
                 }
             </tbody>
         </table>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!-- Скрипти для завантаження та відображення графіків -->
@@ -99,16 +91,25 @@
                 var _chartLabels = data[0];
                 var _chartData = data[1];
 
-                var barColor = ["red", "green", "gold", "blue"];
+                var pieColors = ["#ff9999", "#66b3ff", "#99ff99", "#ffcc99"]; // Задайте власні кольори для кожної частини Pie
 
                 new Chart("MyChart1", {
                     type: "pie",
                     data: {
                         labels: _chartLabels,
                         datasets: [{
-                            backgroundColor: barColor,
+                            backgroundColor: pieColors,
                             data: _chartData
                         }]
+                    },
+                    options: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                fontColor: 'black'
+                            }
+                        }
                     }
                 });
             },
@@ -134,16 +135,30 @@
                 var _chartLabels = data[0];
                 var _chartData = data[1];
 
-                var barColor = ["blue", "green", "red"];
+                var barColor = ["pink", "blue"];
 
+                // Змінено тип графіка на "line" та додано хвилясту лінію
                 new Chart("MyChart2", {
-                    type: "bar",
+                    type: "line",
                     data: {
                         labels: _chartLabels,
                         datasets: [{
                             backgroundColor: barColor,
-                            data: _chartData
+                            data: _chartData,
+                            lineTension: 0.5, // Додаємо параметр lineTension для хвилястості
+                            borderColor: 'rgba(75, 192, 192, 1)', // Додайте власний колір рамки
+                            borderWidth: 2, // Додаємо товщину лінії
+                            pointRadius: 5, // Задаємо розмір крапок
+                            pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Додайте власний колір крапок
+                            pointBorderColor: 'rgba(75, 192, 192, 1)' // Додайте власний колір рамки крапок
                         }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
                     }
                 });
             },

@@ -100,24 +100,28 @@ namespace BIT.Areas.Identity.Pages.Account
             [Display(Name = "Розширена реєстрація")]
             public bool IsExtendedRegistration { get; set; }
 
-            [Required]
             [Display(Name = "Ім'я")]
+            [Required(ErrorMessage = "Поле 'Ім'я' обов'язкове.")]
+            [MaxLength(35, ErrorMessage = "Максимальна довжина імені - 35 символів.")]
+            [RegularExpression(@"^([А-ЯІ]{1}[а-яі]{1,35}|[A-Z]{1}[a-z]{1,35})$", ErrorMessage = "Дозволені тільки літери алфавіту.")]
             public string FirstName { get; set; }
 
-            [Required]
             [Display(Name = "Прізвище")]
+            [Required(ErrorMessage = "Поле 'Прізвище' обов'язкове.")]
+            [MaxLength(35, ErrorMessage = "Максимальна довжина прізвища - 35 символів.")]
+            [RegularExpression(@"^([А-ЯІ]{1}[а-яі]{1,35}|[A-Z]{1}[a-z]{1,35})$", ErrorMessage = "Дозволені тільки літери алфавіту.")]
             public string LastName { get; set; }
 
-
-
-            [Required]
-            [DataType(DataType.PhoneNumber)]
-            [Display(Name = "Телефон для зв'язку")]
+            [Display(Name = "Телефон")]
+            [Required(ErrorMessage = "Поле 'Телефон' обов'язкове.")]
+            [RegularExpression(@"^\+\d{7,13}$", ErrorMessage = "Телефонний номер повинен бути у форматі '+XXXXXXXXXXXXX', де X - це цифра.")]
             public string PhoneNumber { get; set; }
             [Required]
+            [MaxLength(70,ErrorMessage ="Максимальна довжина адреси - 70 символів")]
             [Display(Name = "Місце проживання")]
             public string Address { get; set; }
             [Required]
+            [MaxLength(50, ErrorMessage = "Максимальна довжина - 50 символів")]
             [Display(Name = "Вид транспорту")]
             public string VehicleType { get; set; }
         }

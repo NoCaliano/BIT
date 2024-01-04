@@ -12,5 +12,17 @@ namespace BIT.Mocks
             _context = context;
         }
         public IEnumerable<Order> Orders => _context.Orders.ToList();
+
+        public IEnumerable<Order> LastOrders
+        {
+            get
+            {
+                // Отримати сьогоднішні замовлення починаючи з останнього
+                return _context.Orders
+                    .Where(o => o.OrderDate.Date == DateTime.Now.Date)
+                    .OrderByDescending(o => o.OrderDate)
+                    .ToList();
+            }
+        }
     }
 }

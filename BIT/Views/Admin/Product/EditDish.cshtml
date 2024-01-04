@@ -1,0 +1,25 @@
+﻿@using BIT.DataStuff;
+@using BIT.Interfaces;
+@inject IAllDishes DishBase;
+@{
+    Layout = "_LayoutAdmin";
+}
+
+
+@foreach (var dish in DishBase.Dishes)
+{
+    <div>
+        <!-- Показати дані рядка -->
+        <span>@dish.Name</span>
+
+        <form method="post" action="/Admin/Product/Edit/@dish.Id">
+            <!-- Інші поля форми, які ви хочете редагувати -->
+            <input type="hidden" name="dishId" value="@dish.Id" />
+            <button type="submit">Зберегти зміни</button>
+        </form>
+
+
+    </div>
+}
+
+

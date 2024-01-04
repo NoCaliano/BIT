@@ -1,7 +1,8 @@
-﻿@using BIT.ViewModels;
+﻿@using BIT.Interfaces;
+@using BIT.ViewModels;
 @model OrderDetailsViewModel
-@using BIT.Interfaces
-@inject IAllDishData Carta
+@inject IAllDishData Data
+
 
 <style>
     #order-container {
@@ -65,12 +66,12 @@
 
     <div id="order-container">    
         <div id="close-btn" onclick="closeOrderContainer()">✖</div>
-        <img src="@Carta.RetDishImageById(Model.DishId)"></img>
+        <img src="@Model.Img"></img>
         <form asp-action="OrderDone" asp-controller="Order" method="post">       
             <input type="hidden" asp-for="DishId" name="DishId" />
 
-            <label asp-for="PaymentMethod">Патіжний спосіб:</label>
-            <input asp-for="PaymentMethod" class="form-control" />
+            <label asp-for="PaymentMethod">Платіжний спосіб:</label>
+            <select asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<Payment>()" class="form-control"></select>
             <span asp-validation-for="PaymentMethod" class="text-danger"></span>
 
             <label asp-for="Notes">Замітки</label>
@@ -87,15 +88,13 @@
 
             <button type="submit" onclick="checkAndSubmit()">Confirm Order</button>
         </form>
-
-    </div>
-
+    <h3>Сума за замовлення: @Model.Total</h3>
+    </div>    
 <script>
     function closeOrderContainer() {
         $("#order-container").fadeOut();
     }
 </script>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

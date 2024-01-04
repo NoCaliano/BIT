@@ -1,4 +1,5 @@
 ﻿using BIT.Areas.Identity.Data;
+using BIT.Attributes;
 using BIT.DataStuff;
 using BIT.Hubs;
 using BIT.Models;
@@ -12,7 +13,7 @@ using System.Security.Claims;
 
 namespace BIT.Controllers
 {
-    [Authorize]
+    [CustomAuthorize]
     public class ShopCartController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -135,7 +136,6 @@ namespace BIT.Controllers
                 cart.GrandTotal = cart.CartItems.Sum(ci => ci.Quantity * ci.Dish.Price);
                 _context.SaveChanges();
             }
-            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
@@ -169,7 +169,6 @@ namespace BIT.Controllers
                     }
                 }
             }
-            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
 
             return PartialView("_MyCart", cart);
@@ -194,7 +193,6 @@ namespace BIT.Controllers
                     _context.SaveChanges();
                 }
             }
-            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
 
             return PartialView("_MyCart", cart);
@@ -220,7 +218,6 @@ namespace BIT.Controllers
 
                 }
             }
-            await _hubContext.Clients.All.SendAsync("CartMayEmpty");
             await _hubContext.Clients.All.SendAsync("CartUpdated");
             return PartialView("_MyCart", cart);
         }
@@ -265,7 +262,7 @@ namespace BIT.Controllers
                                 OrderDate = orderDate,
                                 ShippingAddress = d.ShippingAdrees,
                                 Phonenumber = d.PhoneNumber,
-                                PaymentMethod = d.PaymentMethod,
+                                PaymentMethod = d.PaymentMethod.ToString(),
                                 Notes = d.Notes,
                             };
 

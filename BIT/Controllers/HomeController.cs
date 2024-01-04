@@ -1,4 +1,5 @@
-﻿using BIT.DataStuff;
+﻿using BIT.Attributes;
+using BIT.DataStuff;
 using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Drawing.Printing;
 
 namespace BIT.Controllers
 {
-    [Authorize]
+    [CustomAuthorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

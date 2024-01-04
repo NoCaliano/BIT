@@ -1,13 +1,25 @@
 ﻿body {
+    background-color: #000000;
+    color: #ffffff;
+    margin: 0; /* Зменшує відступ від краю екрану до мінімуму */
+    padding: 0; /* Забороняє внутрішній відступ у body */
 }
 
-.table {
+.chart-container {
+    border: 2px solid #ff0000; /* Червона рамка для контрасту */
+    margin-bottom: 10px;
+    border-radius: 8px; /* Закруглені кути рамки (необов'язково) */
+}
+/* Інші стилі залишаються без змін */
+table {
     border-collapse: collapse;
     width: 100%;
+    margin-bottom: 20px;
+    color: #ecf0f1; /* Змінено на світлий колір тексту для контрасту */
 }
 
-    .table th, .table td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
+th, td {
+    border: 1px solid #34495e; /* Змінено на темно-сірий колір */
+    text-align: left;
+    padding: 8px;
+}

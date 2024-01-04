@@ -1,11 +1,16 @@
-﻿using BIT.DataStuff;
+﻿using BIT.Attributes;
+using BIT.DataStuff;
 using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BIT.Controllers
 {
-    [Authorize]
+    [Route("Category")]
+    [CustomAuthorize]
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
@@ -18,42 +23,22 @@ namespace BIT.Controllers
             _context = context;
         }
 
-
-        [Route("Category")]
         public IActionResult Chose()
         {
             return View();
         }
 
-        public async Task<IActionResult> Donuts(int pageNumber = 1)
+        [HttpGet("{name}")]
+        public async Task<IActionResult> Category(string name, int pageNumber = 1)
         {
-            var donutsDishes = _context.Dishes.Where(d => d.Category == "Donuts");
-            var paginatedList = await PaginatedList<Dish>.CreateAsync(donutsDishes, pageNumber, DispalayedAmount);
+            var categoryDishes = _context.Dishes.Where(d => d.Category == name);
 
-            return View(paginatedList);
-        }
+            if (!categoryDishes.Any())
+            {
+                return NotFound(); // Повертаємо 404, якщо категорія не знайдена
+            }
 
-        public async Task<IActionResult> Sets(int pageNumber = 1)
-        {
-            var setsDishes = _context.Dishes.Where(d => d.Category == "Sets");
-            var paginatedList = await PaginatedList<Dish>.CreateAsync(setsDishes, pageNumber, DispalayedAmount);
-
-            return View(paginatedList);
-        }
-
-        public async Task<IActionResult> Pizza(int pageNumber = 1)
-        {
-            var pizzaDishes = _context.Dishes.Where(d => d.Category == "Pizza");
-            var paginatedList = await PaginatedList<Dish>.CreateAsync(pizzaDishes, pageNumber, DispalayedAmount);
-
-            return View(paginatedList);
-        }
-
-
-        public async Task<IActionResult> Sushi(int pageNumber = 1)
-        {
-            var sushiDishes = _context.Dishes.Where(d => d.Category == "Sushi");
-            var paginatedList = await PaginatedList<Dish>.CreateAsync(sushiDishes, pageNumber, DispalayedAmount);
+            var paginatedList = await PaginatedList<Dish>.CreateAsync(categoryDishes, pageNumber, DispalayedAmount);
 
             return View(paginatedList);
         }

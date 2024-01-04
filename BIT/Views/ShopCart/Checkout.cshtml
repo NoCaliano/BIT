@@ -106,7 +106,7 @@
             });
         }
 
-        // Завантаження часткового представлення "_MyCart" в #cart-container
+        // Завантаження часткового представлення "PartCart" в #cart-container
         function loadMyCart() {
             $.ajax({
                 url: '/ShopCart/PartCart',
@@ -173,12 +173,25 @@
         $.ajax({
             url: '/ShopCart/PartCart',
             type: 'GET',
-            success: function (data) {
-                $('#cart-container').html(data);
+            success: function (cartData) {
+                $('#cart-container').html(cartData);
             },
             error: function () {
                 console.error('Failed to load PartCart');
             }
         });
+
+        // Оновлення форми
+        $.ajax({
+            url: '/ShopCart/CartForm',
+            type: 'GET',
+            success: function (formData) {
+                $('#form-container').html(formData);
+            },
+            error: function () {
+                console.error('Failed to load CartForm');
+            }
+        });
     }
 </script>
+

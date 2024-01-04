@@ -8,9 +8,10 @@
     <form asp-action="Confirm" asp-controller="ShopCart" method="post">
         <input type="hidden" asp-for="CartId" name="cartId" />
 
-        <label asp-for="PaymentMethod">Патіжний спосіб:</label>
-        <input asp-for="PaymentMethod" class="form-control" />
+        <label asp-for="PaymentMethod">Платіжний спосіб:</label>
+        <select asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<Payment>()" class="form-control"></select>
         <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+
 
         <label asp-for="Notes">Замітки</label>
         <input asp-for="Notes" class="form-control" />

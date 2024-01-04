@@ -1,10 +1,11 @@
-using BIT.Areas.Identity.Data;
+﻿using BIT.Areas.Identity.Data;
 using BIT.Data;
 using BIT.DataStuff;
 using BIT.Hubs;
 using BIT.Interfaces;
 using BIT.Mocks;
 using BIT.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,6 +58,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -65,6 +68,7 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Welcome}/{action=Home}/{id?}");
+
 
 // It just work
 app.UseEndpoints(endpoints =>

@@ -9,7 +9,8 @@ using Microsoft.CodeAnalysis.Elfie.Serialization;
 
 namespace BIT.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Route("Admin")]
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private readonly ILogger<AdminController> _logger;
@@ -23,69 +24,85 @@ namespace BIT.Controllers
             _userManager = userManager;
         }
 
-        [Route("Admin")]
+        [Route("/Admin/Dashboard")]
         public IActionResult Dashboard()
         {
             return View("~/Views/Admin/Dashboard.cshtml");
         }
 
+        [Route("Orders/All")]
         public IActionResult Orders()
         {
-            return View();
+            return View("~/Views/Admin/Orders/Orders.cshtml");
         }
 
+        [Route("/Admin/Orders/FindOrder")]
         public IActionResult FindOrder()
         {
-            return View();
+            return View("~/Views/Admin/Orders/FindOrder.cshtml");
         }
 
+        [Route("/Admin/Charts/Charts")]
         public IActionResult Charts()
         {
-            return View();
+            return View("~/Views/Admin/Charts/Charts.cshtml");
         }
 
+        [Route("/Admin/Users/Users")]
         public IActionResult Users()
         {
-            return View();
+            return View("~/Views/Admin/Users/Users.cshtml");
         }
 
+        [Route("/Admin/Couriers/Couriers")]
         public IActionResult Couriers()
         {
-            return View();
+            return View("~/Views/Admin/Couriers/Couriers.cshtml");
         }
 
+        [Route("/Admin/Couriers/Requisitions")]
+        public IActionResult Requisitions()
+        {
+            return View("~/Views/Admin/Couriers/Requisitions.cshtml");
+        }
+
+        [Route("/Admin/Users/Roles")]
         public IActionResult Roles()
         {
-            return View();
+            return View("~/Views/Admin/Users/Roles.cshtml");
         }
 
-
+        [Route("/Admin/Users/Find")]
         public IActionResult Find()
         {
-            return View();
+            return View("~/Views/Admin/Users/Find.cshtml");
         }
 
-        
-        public IActionResult AddNewDish()
+        [Route("/Admin/Product/AddDish")]
+        public IActionResult AddDish()
         {
-            ViewData["categories"] = new SelectList(_context.Categories.ToList(), "Name", "Name");
-            return View();
+            return View("~/Views/Admin/Product/AddDish.cshtml");
         }
 
+        [Route("/Admin/Product/DeleteDish")]
         public IActionResult DeleteDish()
         {
-            return View();
+            return View("~/Views/Admin/Product/DeleteDish.cshtml");
         }
 
+        [Route("/Admin/Product/EditDish")]
         public IActionResult EditDish() 
         {
-            return View();
-        }
-        public IActionResult AddCategory()
-        {
-            return View();
+            return View("~/Views/Admin/Product/EditDish.cshtml");
         }
 
+        [Route("/Admin/Product/AddCategory")]
+        public IActionResult AddCategory()
+        {
+            return View("~/Views/Admin/Product/AddCategory.cshtml");
+        }
+
+        [Route("/Admin/AddNewCategory")]
         [HttpPost]
         public IActionResult AddNewCategory(Category model)
         {
@@ -97,9 +114,10 @@ namespace BIT.Controllers
                 return RedirectToAction("Dashboard", "Admin"); // Повертаємо до панелі адміністратора або іншої сторінки
             }
 
-            return View(model);
+            return View("~/Views/Admin/Product/AddCategory.cshtml", model);
         }
 
+        [Route("/Admin/AddNewDish")]
         [HttpPost]
         public IActionResult AddNewDish(Dish model)
         {
@@ -112,9 +130,10 @@ namespace BIT.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(model);
+            return View("~/Views/Admin/Product/AddDish.cshtml", model);
         }
 
+        [Route("/Admin/Delete")]
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -131,39 +150,7 @@ namespace BIT.Controllers
             return RedirectToAction("DeleteDish", "Admin"); // Перенаправлення до головної сторінки або іншої відповідної дії
         }
 
-
-        public async Task<IActionResult> AddRole(string userId, string roleName)
-        {
-            // Отримати користувача за його ID
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                // Користувач не знайдений, обробити відповідно
-                return NotFound();
-            }
-
-            // Додати користувачеві роль
-            var result = await _userManager.AddToRoleAsync(user, roleName);
-
-            if (result.Succeeded)
-            {
-                // Роль успішно додана
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Помилка при додаванні ролі, обробити відповідно
-                return View("Error");
-            }
-        }
-
-        public IActionResult Requisitions()
-        {
-            return View();
-        }
-
-
+        [Route("/Admin/UpdateRequisitionStatus")]
         [HttpPost]
         public async Task<IActionResult> UpdateRequisitionStatus(int reqId)
         {
@@ -200,6 +187,7 @@ namespace BIT.Controllers
             return NotFound();
         }
 
+        [Route("/Admin/SetSalary")]
         [HttpPost]
         public async Task<IActionResult> SetSalary(int couId, int Salary)
         {
@@ -212,6 +200,7 @@ namespace BIT.Controllers
             return RedirectToAction("Couriers", "Admin");
         }
 
+        [Route("/Admin/PaySalary")]
         [HttpPost]
         public async Task<IActionResult> PaySalary(int couId)
         {
@@ -224,6 +213,7 @@ namespace BIT.Controllers
             return RedirectToAction("Couriers", "Admin");
         }
 
+        [Route("/Admin/ShowUserData")]
         [HttpGet]
         public async Task<IActionResult> ShowUserData(string IdOrEmail)
         {
@@ -245,6 +235,7 @@ namespace BIT.Controllers
             return PartialView("_UserNotFound");
         }
 
+        [Route("/Admin/ShowOrderData")]
         [HttpGet]
         public IActionResult ShowOrderData(string IdOrPhone)
         {
@@ -271,21 +262,23 @@ namespace BIT.Controllers
             return PartialView("_UserNotFound");
         }
 
+        [Route("/Admin/Product/Edit/{dishId}")]
         [HttpPost]
-        public IActionResult Edit(int dishId)
+        public IActionResult Edit([FromRoute] int dishId)
         {
             var dish = _context.Dishes.FirstOrDefault(p => p.Id == dishId);
             if (dish != null)
             {
-                return PartialView("_EditDish", dish);
+                return View("~/Views/Admin/Product/Edit.cshtml", dish);
             }
             return NotFound();
         }
 
+
+        [Route("/Admin/Product/Edit")]
         [HttpPost]
-        public async Task<IActionResult> EditThis(Dish model)
-        {
-            
+        public async Task<IActionResult> Edit([FromForm] Dish model)
+        {            
             var existingDish = await _context.Dishes.FindAsync(model.Id);
             if (existingDish != null)
             {
@@ -301,7 +294,7 @@ namespace BIT.Controllers
                 return RedirectToAction("Home", "Welcome");
             }
 
-            return PartialView("_EditDish", model);
+            return View("~/Views/Admin/Product/Edit.cshtml", model);
         }
 
     }

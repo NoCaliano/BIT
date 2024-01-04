@@ -19,7 +19,7 @@
         }
 
         .sidebar {
-            width: 250px;
+            width: 175px;
             background-color: #333;
             color: #fff;
             padding: 20px;
@@ -141,9 +141,10 @@
                 <li class="expandable" id="products">
                     Товари
                     <ul class="sub-menu">
-                        <li><a href="@Url.Action("AddNewDish", "Admin")">Додати товар</a></li>
-                        <li><a href="@Url.Action("DeleteDish", "Admin")">Видалити товари</a></li>
-                        <li><a href="@Url.Action("AddCategory", "Admin")">Додати категорію</a></li>
+                        <li><a href="@Url.Action("AddDish", "Admin")">Додати товар</a></li>
+                        <li><a href="@Url.Action("EditDish", "Admin")">Редагувати товар</a></li>
+                        <li><a href="@Url.Action("DeleteDish", "Admin")">Видалити товар</a></li>
+                        <li><a href="@Url.Action("AddCategory", "Admin")">Додати категорію</a></li>                        
                     </ul>
                 </li>
                 <li class="expandable" id="users">

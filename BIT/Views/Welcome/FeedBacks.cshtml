@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Page</title>
+    <!-- Підключення jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #feedbackContainer {
+            margin-top: 20px;
+        }
+
+        .feedback {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
+            .feedback p {
+                margin: 0;
+            }
+
+            .feedback .rating {
+                font-weight: bold;
+                color: #ff9800;
+            }
+
+            .feedback .datetime {
+                color: #888;
+            }
+
+        .star-rating {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Відгуки клієнтів</h1>
+
+    <div id="feedbackContainer">
+        <!-- Тут буде відображене часткове представлення -->
+    </div>
+
+    @foreach (var feedback in Model)
+    {
+        <div class="feedback">
+            <p class="rating">
+                Оцінка: <span class="star-rating">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= (int)feedback.Rating)
+                        {
+                            <span>&#9733;</span>
+                        }
+                        else
+                        {
+                            <span>&#9734;</span>
+                        }
+                    }
+                </span>
+            </p>
+            <p>Ім'я: @feedback.Name</p>
+            <p>Текст відгуку: @feedback.Text</p>
+            <p class="datetime">Дата та час: @feedback.DateTime</p>
+        </div>
+    }
+
+    <script>
+        // Виклик AJAX-запиту при завантаженні сторінки
+        $(document).ready(function () {
+            // Виклик FeedBackForm з контроллера Welcome
+            $.ajax({
+                url: '/Welcome/FeedBackForm', // Шлях до контроллера та дії
+                type: 'GET',
+                success: function (result) {
+                    // Вставка часткового представлення в контейнер
+                    $('#feedbackContainer').html(result);
+                },
+                error: function (error) {
+                    console.log('Помилка завантаження часткового представлення:', error);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
