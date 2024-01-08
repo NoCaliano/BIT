@@ -12,10 +12,10 @@
         <!-- Показати дані рядка -->
         <span>@dish.Name</span>
 
-        <form method="post" action="/Admin/Product/Edit/@dish.Id">
+        <form asp-action="SentToEdit" asp-controller="Admin" method="post">
             <!-- Інші поля форми, які ви хочете редагувати -->
             <input type="hidden" name="dishId" value="@dish.Id" />
-            <button type="submit">Зберегти зміни</button>
+            <button type="submit">Редагувати</button>
         </form>
 
 

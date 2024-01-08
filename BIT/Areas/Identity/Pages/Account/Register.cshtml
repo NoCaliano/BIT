@@ -2,104 +2,214 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = "_RegLayout";
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">ConfirmPassword</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
+<head>
+    <!-- Add the required external CSS and font-awesome links -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
-            <div id="extendedFields" style="display: none;">
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="Ім'я" />
-                    <label asp-for="Input.FirstName">Ім'я</label>
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Прізвище" />
-                    <label asp-for="Input.LastName">Прізвище</label>
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Address" class="form-control" aria-required="true" placeholder="Прізвище" />
-                    <label asp-for="Input.Address">Адреса проживання</label>
-                    <span asp-validation-for="Input.Address" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" placeholder="Прізвище" />
-                    <label asp-for="Input.PhoneNumber">Телефон для зв'язку</label>
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.VehicleType" class="form-control" aria-required="true" placeholder="Прізвище" />
-                    <label asp-for="Input.VehicleType">Транспорт для роботи</label>
-                    <span asp-validation-for="Input.VehicleType" class="text-danger"></span>
-                </div>
-            </div>
+    <!--Stylesheet-->
+    <style media="screen">
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
 
-            <div class="form-check mb-3">
-                <input asp-for="Input.IsExtendedRegistration" class="form-check-input" id="extendedRegistrationToggle" />
-                <label asp-for="Input.IsExtendedRegistration" class="form-check-label">Бажаю стати кур'єром </label>
-            </div>
+        body {
+            background-color: #080710;
+        }
 
-           
+        .background {
+            width: 430px;
+            height: 520px;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+        }
 
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
+            .background .shape {
+                height: 200px;
+                width: 200px;
+                position: absolute;
+                border-radius: 50%;
             }
-        </section>
+
+        .shape:first-child {
+            background: linear-gradient(#1845ad, #23a2f6);
+            left: -80px;
+            top: -80px;
+        }
+
+        .shape:last-child {
+            background: linear-gradient(to right, #ff512f, #f09819);
+            right: -30px;
+            bottom: -80px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto; /* Це робить форму вирівняною по центру сторінки */
+            background-color: rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+            padding: 50px 35px;
+        }
+
+            form * {
+                font-family: 'Poppins', sans-serif;
+                color: #ffffff;
+                letter-spacing: 0.5px;
+                outline: none;
+                border: none;
+            }
+
+            form h2 {
+                font-size: 32px;
+                font-weight: 500;
+                line-height: 42px;
+                text-align: center;
+            }
+
+        label {
+            display: block;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.07);
+            border-radius: 3px;
+            padding: 15px;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        ::placeholder {
+            color: #e5e5e5;
+        }
+
+        button {
+            margin-top: 20px; /* Зменшено відступ для кращого вигляду */
+            width: 100%;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-check-input {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+        }
+
+            .form-check-input:checked::before {
+                content: '\2713'; /* відмітка галочки */
+                font-size: 16px;
+                color: #ffffff;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            /* Додайте цей стиль, якщо хочете вигляд галочки при наведенні */
+            .form-check-input:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+    </style>
+</head>
+
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
-</div>
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <h2>Create a new account.</h2>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <label asp-for="Input.Email">Email</label>
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />           
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <label asp-for="Input.ConfirmPassword">ConfirmPassword</label>
+            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />            
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div id="extendedFields" style="display: none;">
+            <div class="form-floating mb-3">
+                <label asp-for="Input.FirstName">Ім'я</label>
+                <input asp-for="Input.FirstName" class="form-control" aria-required="true"  />                
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <label asp-for="Input.LastName">Прізвище</label>
+                <input asp-for="Input.LastName" class="form-control" aria-required="true"  />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <label asp-for="Input.Address">Адреса проживання</label>
+                <input asp-for="Input.Address" class="form-control" aria-required="true"  />                
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <label asp-for="Input.PhoneNumber">Телефон для зв'язку</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true"  />                
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <label asp-for="Input.VehicleType">Транспорт для роботи</label>
+                <input asp-for="Input.VehicleType" class="form-control" aria-required="true"  />
+                <span asp-validation-for="Input.VehicleType" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-check mb-3">
+            <label asp-for="Input.IsExtendedRegistration" class="form-check-label">Бажаю стати кур'єром</label>
+            <input asp-for="Input.IsExtendedRegistration" class="form-check-input" id="extendedRegistrationToggle" />           
+        </div>
+
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        <div>
+            <p>
+                <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Already have account? Login</a>
+            </p>
+        </div>
+    </form>
+    
+</body>
+
+</html>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

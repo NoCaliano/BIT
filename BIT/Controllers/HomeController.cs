@@ -14,7 +14,7 @@ namespace BIT.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
-        private const int DispalayedAmount = 9;
+        private const int DispalayedAmount = 12;
         private static readonly Cart cart = new Cart();
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {

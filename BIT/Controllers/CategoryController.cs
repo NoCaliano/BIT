@@ -15,7 +15,7 @@ namespace BIT.Controllers
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly AppDbContext _context;
-        private const int DispalayedAmount = 9;
+        private const int DispalayedAmount = 12;
 
         public CategoryController(ILogger<CategoryController> logger, AppDbContext context)
         {

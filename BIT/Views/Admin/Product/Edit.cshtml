@@ -7,7 +7,8 @@
 }
 
 <div class="partial-container">
-    <form asp-action="Edit" method="post" class="dish-form">
+    <form asp-action="Edit" asp-controller="Admin" method="post" class="dish-form">
+        <input asp-for="Id" type="hidden">
         <div class="form-group">
             <label asp-for="Name">Назва:</label>
             <input asp-for="Name" class="form-control" />
@@ -68,3 +69,6 @@
 
 
 
+<!-- Підключення jquery.validate.min.js після jQuery -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

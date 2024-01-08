@@ -1,15 +1,14 @@
-﻿
-#cartContainer {
+﻿#cartContainer {
     position: fixed;
-    top: 0;
+    top: 100px; /* Позиціонуємо контейнер відносно верхнього краю хедера (розмір хедера 50px) */
     right: 0;
-    max-height: 100vh; /* Задайте максимальну висоту відповідно до вашого дизайну */
-    overflow-y: auto; /* Включити прокрутку при необхідності */
-    width: 300px; /* Задайте ширину відповідно до ваших потреб */
+    max-height: calc(100vh - 50px); /* Встановлюємо максимальну висоту з урахуванням висоти хедера */
+    overflow-y: auto;
+    width: 300px;
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
-    display: none; /* По замовчуванню ховаємо контейнер */
+    display: none;
 }
 
 

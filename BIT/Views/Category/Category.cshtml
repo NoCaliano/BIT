@@ -1,15 +1,17 @@
 ﻿@model PaginatedList<Dish>
 
 <link rel="stylesheet" href="~/css/Partial.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/productcart.css" asp-append-version="true" />
 
 <button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
+
 
 <div class="container">
     <div class="row">
         @foreach (var dish in Model)
-        {           
-                <div class="col-md-4 mb-4">
-                    <div class="card">
+        {
+            <div class="col-md-4 mb-4">
+                <div class="product-card">
                     <a href="/Home/Details/@dish.Id">
                         <img src="@dish.Img" class="card-img-top" alt="невезіння" />
                     </a>
@@ -17,20 +19,20 @@
                         <h5 class="card-title">@dish.Name</h5>
                         <p class="card-text">Ціна: @dish.Price</p>
 
-                            <form asp-controller="Order" asp-action="PartTest" class="order-form">
+                        <div class="order-form">
+                            <form asp-controller="Order" asp-action="PartTest">
                                 <input type="hidden" name="dishId" value="@dish.Id" />
                                 <button type="button" class="btn btn-success order-btn">Замовити</button>
                             </form>
 
-
                             <form asp-controller="ShopCart" asp-action="AddToListOfCartItems">
                                 <input type="hidden" name="dishId" value="@dish.Id" />
-                                <button type="submit" class="btn btn-success">Додати в корзину</button>
+                                <button type="submit" class="btn btn-primary cart-btn">Додати в корзину</button>
                             </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            
         }
     </div>
 
@@ -175,4 +177,27 @@
             }
         });
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Додати в кошик" buttons
+        var addToCartButtons = document.querySelectorAll('.cart-btn');
+
+        // Add click event listener to each button
+        addToCartButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                // Get the "🛒" button
+                var showCartBtn = document.getElementById('showCartBtn');
+
+                // Add the 'shake' class to trigger the animation
+                showCartBtn.classList.add('shake');
+
+                // Remove the 'shake' class after the animation ends
+                setTimeout(function () {
+                    showCartBtn.classList.remove('shake');
+                }, 800); // Adjust the time based on your animation duration
+            });
+        });
+    });
 </script>

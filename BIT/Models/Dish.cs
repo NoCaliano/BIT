@@ -10,7 +10,7 @@ namespace BIT.Models
         public int Id { get; set; }
         [Column("Назва")]
         [Display(Name ="Назва")]
-        [MaxLength(25, ErrorMessage = "Максимальна довжина 'Назва' - 25 символів.")]
+        [MaxLength(45, ErrorMessage = "Максимальна довжина 'Назва' - 55 символів.")]
         public string Name { get; set; }
         [Column("Опис")]
         [Display(Name="Опис")]
@@ -18,7 +18,7 @@ namespace BIT.Models
         public string? Description { get; set; }
         [Column("Картинка")]
         [Display(Name="Картинка")]
-        [MaxLength(20, ErrorMessage = "Максимальна довжина 'Картинка' - 100 символів.")]
+        [MaxLength(200, ErrorMessage = "Максимальна довжина 'Картинка' - 200 символів.")]
         public string? Img { get; set; }
         [Column("Ціна")]
         [Display(Name="Ціна")]

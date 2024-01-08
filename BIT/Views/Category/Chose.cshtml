@@ -1,41 +1,78 @@
 ﻿@{
-    ViewData["Title"] = "Chose";
+    ViewData["Title"] = "Choose";
 }
 
-<style>
-    .category-images {
-        display: flex;
-        flex-wrap: wrap; /* Allow flex items to wrap to the next line */
-        justify-content: space-around;
-        align-items: center;
-    }
-
-        .category-images a {
-            max-width: 150px; /* Adjust the maximum width as needed */
-            width: 45%; /* Set the width to occupy 45% of the container */
-            margin: 10px; /* Add some margin around each image */
-            text-align: center; /* Center the image within the container */
-            transition: transform 0.3s; /* Add a transition effect */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #495057;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
 
-            .category-images a:hover {
-                transform: scale(1.1); /* Increase the size on hover */
+        h2 {
+            margin-top: 50px;
+            font-size: 36px;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .category-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+            .category-images a {
+                margin: 15px;
+                text-decoration: none;
+                color: #495057;
+                transition: transform 0.3s ease-in-out;
+                display: inline-block;
             }
-</style>
 
-<h2>Choose a Category</h2>
+            .category-images img {
+                max-width: 300px;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease-in-out;
+            }
 
-<div class="category-images">
-    <a href="@Url.Action("Donuts", "Category")">
-        <img src="~/img/к4.jpg" alt="Donuts">
-    </a>
-    <a href="@Url.Action("Sets", "Category")">
-        <img src="~/img/к1.jpg" alt="Sets">
-    </a>
-    <a href="@Url.Action("Pizza", "Category")">
-        <img src="~/img/к3.jpg" alt="Pizza">
-    </a>
-    <a href="@Url.Action("Sushi", "Category")">
-        <img src="~/img/к2.jpg" alt="Sushi">
-    </a>
-</div>
+            .category-images a:hover {
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Choose a Category</h2>
+
+    <div class="category-images">
+        <a href="@Url.Action("Donuts", "Category")">
+            <img src="~/img/c1.jpg" alt="Donuts">
+        </a>
+        <a href="@Url.Action("Cakes", "Category")">
+            <img src="~/img/flor.png" alt="Cakes">
+        </a>
+        <a href="@Url.Action("Pizza", "Category")">
+            <img src="~/img/к3.jpg" alt="Pizza">
+        </a>
+        <a href="@Url.Action("Sushi", "Category")">
+            <img src="~/img/к2.jpg" alt="Sushi">
+        </a>
+    </div>
+
+</body>
+</html>
+

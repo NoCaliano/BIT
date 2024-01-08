@@ -262,9 +262,9 @@ namespace BIT.Controllers
             return PartialView("_UserNotFound");
         }
 
-        [Route("/Admin/Product/Edit/{dishId}")]
+        [Route("/Admin/Product/Edit/")]
         [HttpPost]
-        public IActionResult Edit([FromRoute] int dishId)
+        public IActionResult SentToEdit(int dishId)
         {
             var dish = _context.Dishes.FirstOrDefault(p => p.Id == dishId);
             if (dish != null)
@@ -275,23 +275,26 @@ namespace BIT.Controllers
         }
 
 
-        [Route("/Admin/Product/Edit")]
+        [Route("/Admin/Edit")]
         [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] Dish model)
-        {            
-            var existingDish = await _context.Dishes.FindAsync(model.Id);
-            if (existingDish != null)
+        public async Task<IActionResult> Edit( Dish model)
+        {
+            var dish = _context.Dishes.FirstOrDefault(p => p.Id == model.Id);
+            if (ModelState.IsValid)
             {
-                existingDish.Img = model.Img;
-                existingDish.Category = model.Category;
-                existingDish.Calories = model.Calories;
-                existingDish.IsAvaileble = model.IsAvaileble;
-                existingDish.Description = model.Description;
-                existingDish.IsFavorite = model.IsFavorite;
-                existingDish.Price = model.Price;
-                existingDish.Name = model.Name;
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Home", "Welcome");
+                if (model != null && dish != null)
+                {                    
+                    dish.Name = model.Name;
+                    dish.IsFavorite = model.IsFavorite;
+                    dish.Calories = model.Calories;
+                    dish.Description = model.Description;
+                    dish.Img = model.Img;
+                    dish.Category = model.Category;
+                    dish.IsAvaileble = model.IsAvaileble;
+                    dish.Price = model.Price;                   
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Home", "Welcome");
+                }
             }
 
             return View("~/Views/Admin/Product/Edit.cshtml", model);

@@ -25,6 +25,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BIT.Areas.Identity.Pages.Account
 {
+    
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -150,22 +151,7 @@ namespace BIT.Areas.Identity.Pages.Account
                 && Input.PhoneNumber == null && Input.VehicleType == null && Input.Address == null))
             {
                 var user = CreateUser();
-                if (Input.FirstName != null && Input.LastName != null)
-                {
-                    user.FirstName = Input.FirstName;
-                    user.LastName = Input.LastName;
-                    Requisition requisition = new Requisition()
-                    {
-                        UserId = user.Id.ToString(),
-                        Name = Input.FirstName,
-                        LastName = Input.LastName,
-                        PhoneNumber = Input.PhoneNumber,
-                        Address = Input.Address,
-                        VehicleType = Input.VehicleType,
-                    };
-                    _context.Requisitions.Add(requisition);
-                    await _context.SaveChangesAsync();
-                }
+                
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
@@ -174,6 +160,22 @@ namespace BIT.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    if (Input.FirstName != null && Input.LastName != null)
+                    {
+                        user.FirstName = Input.FirstName;
+                        user.LastName = Input.LastName;
+                        Requisition requisition = new Requisition()
+                        {
+                            UserId = user.Id.ToString(),
+                            Name = Input.FirstName,
+                            LastName = Input.LastName,
+                            PhoneNumber = Input.PhoneNumber,
+                            Address = Input.Address,
+                            VehicleType = Input.VehicleType,
+                        };
+                        _context.Requisitions.Add(requisition);
+                        await _context.SaveChangesAsync();
+                    }
 
                     _logger.LogInformation("User created a new account with password.");
 
