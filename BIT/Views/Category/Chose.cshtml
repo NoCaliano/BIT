@@ -1,4 +1,8 @@
-﻿@{
+﻿@using BIT.DataStuff
+@using BIT.Interfaces
+@inject IAllCategories Categories
+
+@{
     ViewData["Title"] = "Choose";
 }
 
@@ -59,18 +63,11 @@
     <h2>Choose a Category</h2>
 
     <div class="category-images">
-        <a href="@Url.Action("Donuts", "Category")">
-            <img src="~/img/c1.jpg" alt="Donuts">
+        @foreach(var category in Categories.Categories){
+        <a href="@Url.Action(category.Name, "Category")">
+                <img src="~/img/@($"{category.Name}.jpg")" alt="@category.Name">
         </a>
-        <a href="@Url.Action("Cakes", "Category")">
-            <img src="~/img/flor.png" alt="Cakes">
-        </a>
-        <a href="@Url.Action("Pizza", "Category")">
-            <img src="~/img/к3.jpg" alt="Pizza">
-        </a>
-        <a href="@Url.Action("Sushi", "Category")">
-            <img src="~/img/к2.jpg" alt="Sushi">
-        </a>
+        }
     </div>
 
 </body>

@@ -132,7 +132,7 @@
                     <div id="overlay">
                         <a href="/account/MyOrders">Мої замовлення</a>
                         <a href="/account/settings">Персональні дані</a>
-                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Home", "Welcome", new { area = "" })">
+                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Welcome", new { area = "" })">
                             <button id="logout" type="submit" class="text-white">Logout</button>
                         </form>
                     </div>
