@@ -1,41 +1,50 @@
 ﻿@model Courier
-
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-        color: #495057;
-    }
-
-    .container {
-        max-width: 800px;
-        margin: 50px auto;
-    }
-
-    p {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-    }
-
-    canvas {
-        max-width: 400px;
-        max-height: 200px;
-        margin-top: 20px;
-    }
-</style>
-
-
-<p>Ім'я @Model.Name</p>
-<p>Прізвище @Model.LastName</p>
-<p>Вид транспорту: @Model.VehicleType</p>
-<p>Ваша зарплатня: @Model.Salary</p>
-<p>Остання виплата: @Model.LastSalary</p>
-<p>Всього виконано доставок: @Model.Delievered</p>
-
-<canvas id="MyChart1" style="max-width: 400px; max-height: 200px;"></canvas>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Information</title>
+    <style>
+        .thecontainer {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+
+    <div class="thecontainer">
+        <h1>Courier Information</h1>
+        <p><strong>Ім'я:</strong> @Model.Name</p>
+        <p><strong>Прізвище:</strong> @Model.LastName</p>
+        <p><strong>Вид транспорту:</strong> @Model.VehicleType</p>
+        <p><strong>Ваша зарплатня:</strong> @Model.Salary</p>
+        <p><strong>Остання виплата:</strong> @Model.LastSalary</p>
+        <p><strong>Всього виконано доставок:</strong> @Model.Delievered</p>
+
+        <canvas id="MyChart1"></canvas>
+    </div>
+
+    
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -57,12 +66,17 @@
                 var barColor = ["red", "green", "gold", "blue"];
 
                 new Chart("MyChart1", {
-                    type: "bar",
+                    type: "line",
                     data: {
                         labels: _chartLabels,
                         datasets: [{
                             label: 'Кількість доставок',
                             backgroundColor: barColor,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2,
+                            pointRadius: 5,
+                            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                            pointBorderColor: 'rgba(75, 192, 192, 1)',
                             data: _chartData
                         }]
                     },

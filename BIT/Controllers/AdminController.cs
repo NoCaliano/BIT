@@ -259,7 +259,7 @@ namespace BIT.Controllers
             }
 
             // Якщо не вдалося знайти за Id і за номером телефону, повертаємо відповідь про помилку
-            return PartialView("_UserNotFound");
+            return PartialView("_OrderData", null);
         }
 
         [Route("/Admin/Product/Edit/")]
@@ -298,6 +298,39 @@ namespace BIT.Controllers
             }
 
             return View("~/Views/Admin/Product/Edit.cshtml", model);
+        }
+
+        [Route("/Admin/ShowDishData")]
+        [HttpGet]
+        public IActionResult ShowDishData(string IdOrName)
+        {
+            // Перевірка, чи IdOrPhone можна конвертувати в int
+            if (int.TryParse(IdOrName, out int dishId))
+            {
+                // Конвертація вдалася, шукаємо за Id
+                var dish = _context.Dishes.FirstOrDefault(o => o.Id == dishId);
+                if (dish != null)
+                {
+                    return PartialView("_FindDish", dish);
+                }
+            }
+
+            // Шукаємо за номером назвою
+            var dish_ = _context.Dishes.FirstOrDefault(p => p.Name == IdOrName);
+
+            if (dish_ != null)
+            {
+                return PartialView("_FindDish", dish_);
+            }
+
+            // Якщо не вдалося знайти за Id і за назвою, повертаємо відповідь про помилку
+            return PartialView("_FindDish", null);
+        }
+
+        [Route("/Admin/Product/Find")]
+        public IActionResult FindDish()
+        {
+            return View("~/Views/Admin/Product/FindDish.cshtml");
         }
 
     }

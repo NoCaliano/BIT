@@ -1,7 +1,99 @@
 ﻿@using BIT.Areas.Identity.Data;
 @model ApplicationUser
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            
+        }
 
-<h1>Користувач знайдений</h1>
+        h1, h2 {
+            color: #333;
+        }
 
-<h2>Ім'я користувача: @Model.FirstName</h2>
+        h1 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+
+        h2 {
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .user-details {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .user-info {
+            margin-bottom: 10px;
+        }
+
+        .confirmed {
+            color: green;
+            font-weight: bold;
+        }
+
+        .not-confirmed {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+            }
+        });
+    </script>
+    <title>Користувач знайдений</title>
+</head>
+<body>
+
+    <h1>Користувач знайдений</h1>
+
+    <div class="user-details">
+        <div class="user-info">
+            <span class="label">Ім'я користувача:</span> @Model.FirstName @Model.LastName
+        </div>
+        <div class="user-info">
+            <span class="label">Адреса:</span> @Model.Address
+        </div>
+        <div class="user-info">
+            <span class="label">Email:</span> @Model.Email
+        </div>
+        <div class="user-info">
+            <span class="label">Номер телефону:</span> @Model.PhoneNumber
+        </div>
+        <div class="user-info">
+            <span class="label">ID:</span> @Model.Id
+        </div>
+        <div class="user-info">
+            <span class="label">Username:</span> @Model.UserName
+        </div>
+        <div class="user-info">
+            <span class="label">Двофакторна автентифікація:</span> @(Model.TwoFactorEnabled ? "Увімкнено" : "Вимкнено")
+        </div>
+        <div class="user-info">
+            <span class="label">Email підтверджено:</span> @(Model.EmailConfirmed ? "Так" : "Ні")
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>

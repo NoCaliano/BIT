@@ -1,41 +1,69 @@
 ﻿@model PaginatedList<Dish>
 
 <link rel="stylesheet" href="~/css/Partial.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/productcart.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
 
 <button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
+<style>
+    @@keyframes bounceIn {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
 
+        40% {
+            transform: translateY(-30px);
+        }
 
-<div class="container">
+        60% {
+            transform: translateY(-15px);
+        }
+    }
+
+    /* Додайте клас анімації до кнопки корзини при натисканні на кнопку "Додати в корзину" */
+    .animate-cart-btn {
+        animation: bounceIn 1s;
+    }
+
+    .card {
+        transition: transform 0.3s;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+</style>
+<div class="container mt-4">
     <div class="row">
         @foreach (var dish in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="product-card">
+                <div class="card">
                     <a href="/Home/Details/@dish.Id">
                         <img src="@dish.Img" class="card-img-top" alt="невезіння" />
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">@dish.Name</h5>
-                        <p class="card-text">Ціна: @dish.Price</p>
+                        <p class="card-text">Ціна: @dish.Price ₴</p>
 
-                        <div class="order-form">
-                            <form asp-controller="Order" asp-action="PartTest">
-                                <input type="hidden" name="dishId" value="@dish.Id" />
-                                <button type="button" class="btn btn-success order-btn">Замовити</button>
-                            </form>
+                        <form asp-controller="Order" asp-action="PartTest" class="order-form">
+                            <input type="hidden" name="dishId" value="@dish.Id" />
+                            <button type="button" class="btn btn-success order-btn">Замовити</button>
+                        </form>
 
-                            <form asp-controller="ShopCart" asp-action="AddToListOfCartItems">
-                                <input type="hidden" name="dishId" value="@dish.Id" />
-                                <button type="submit" class="btn btn-primary cart-btn">Додати в корзину</button>
-                            </form>
-                        </div>
+                        <form asp-controller="ShopCart" asp-action="AddToListOfCartItems" class="cart-form">
+                            <input type="hidden" name="dishId" value="@dish.Id" />
+                            <button type="submit" class="btn btn-success add-to-cart-btn">Додати в корзину</button>
+                        </form>
                     </div>
                 </div>
             </div>
         }
     </div>
-
 
     <div id="cartContainer">
         <!-- Вміст часткового представлення корзини буде тут -->
@@ -46,17 +74,19 @@
         var NextDisabled = !Model.NextPage ? "disabled" : "";
     }
 
-    <a asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex-1)"
-       class="btn btn-default @PrevDisabled">
-        Previous
-    </a>
-
-    <a asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex+1)"
-       class="btn btn-default @NextDisabled">
-        Next
-    </a>
-
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @PrevDisabled">
+                <a class="page-link" asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+            </li>
+            <li class="page-item @NextDisabled">
+                <a class="page-link" asp-action="@Model[0].Category.ToString()" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
+
 
 <div id="partial-load"></div>
 
@@ -180,24 +210,16 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the "Додати в кошик" buttons
-        var addToCartButtons = document.querySelectorAll('.cart-btn');
+    $(document).ready(function () {
+        $('.add-to-cart-btn').on('click', function () {
+            // Знаходження кнопки "Додати в корзину" та додавання класу для анімації
+            $('#showCartBtn').addClass('animate-cart-btn');
 
-        // Add click event listener to each button
-        addToCartButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                // Get the "🛒" button
-                var showCartBtn = document.getElementById('showCartBtn');
-
-                // Add the 'shake' class to trigger the animation
-                showCartBtn.classList.add('shake');
-
-                // Remove the 'shake' class after the animation ends
-                setTimeout(function () {
-                    showCartBtn.classList.remove('shake');
-                }, 800); // Adjust the time based on your animation duration
-            });
+            // Затримка для відображення анімації, наприклад, 1 секунда
+            setTimeout(function () {
+                // Зняття класу анімації після затримки
+                $('#showCartBtn').removeClass('animate-cart-btn');
+            }, 1000); // Затримка у мілісекундах
         });
     });
 </script>

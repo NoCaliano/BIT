@@ -1,16 +1,49 @@
 ﻿#cartContainer {
     position: fixed;
-    top: 100px; /* Позиціонуємо контейнер відносно верхнього краю хедера (розмір хедера 50px) */
-    right: 0;
-    max-height: calc(100vh - 50px); /* Встановлюємо максимальну висоту з урахуванням висоти хедера */
+    top: 66px;
+    bottom: 45px;
+    right: 0px; /* Збільшити відступ з правого краю */
+    max-height: calc(100vh - 50px);
     overflow-y: auto;
     width: 300px;
+    border-radius: 8px; /* Додано закруглення кутів */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Додано тінь для вигляду "піднятості" */
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
     display: none;
+    z-index: 999;
+
+}
+.dish-name{
+    max-width: 100px;
+    text-align: center;
+    margin-left: 30px;
 }
 
+.grand-total{
+    text-align:center;
+}
+.cartContent {
+    margin-left: 30px;
+}
+    #cartContainer::-webkit-scrollbar {
+        width: 10px; /* ширина скроллбару */
+    }
+
+    #cartContainer::-webkit-scrollbar-thumb {
+        background-color: #000000; /* колір скроллбару */
+        border-radius: 10px; /* закруглені кути для скроллбару */
+    }
+
+    #cartContainer::-webkit-scrollbar-track {
+        background-color: #eee; /* колір треку скроллбару */
+        border-radius: 10px; /* закруглені кути для треку скроллбару */
+    }
+/* Збільшити відступ bottom для футера */
+footer {
+    margin-top: 20px;
+}
 
 #partial-load {
     position: fixed;
@@ -23,15 +56,14 @@
     border: 1px solid #ccc;
     padding: 10px;
     display: none;
-    z-index: 999; /* Додайте z-index, щоб мати вищий зрівень ніж інші елементи на сторінці */
+    z-index: 999;
 }
 
 #showCartBtn {
     position: fixed;
     bottom: 10px;
     left: 10px;
-    z-index: 1000; /* Це значення може бути на ваш вибір, залежно від потреб вашого додатка */
-    font-size: 24px; /* Розмір шрифту кнопки */
+    z-index: 1000;
+    font-size: 24px;
     padding: 10px 20px;
 }
-

@@ -1,4 +1,4 @@
-﻿using BIT.Areas.Identity.Data;
+using BIT.Areas.Identity.Data;
 using BIT.Data;
 using BIT.DataStuff;
 using BIT.FirstSetup;

@@ -8,16 +8,36 @@
 }
 
 <link rel="stylesheet" href="~/css/Admin/Dashboard.css" asp-append-version="true" />
+<style>
+    .chart-container {
+        border: 2px solid gold; /* Add a solid border around the chart container */
+        border-radius: 8px; /* Add border radius for rounded corners */
+        margin-bottom: 20px; /* Add some margin at the bottom for better spacing */
+        overflow: hidden; /* Hide overflow to prevent box-shadow from overflowing */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for a lifted look */
+    }
 
-<div class="chart-container" style="max-width: 1300px; max-height: 400px; margin: 0 auto;">
-    <!-- Перший графік -->
-    <canvas id="MyChart1" style="max-width: 400px; max-height: 200px; float: right;"></canvas>
+    .chart-description {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px; /* Додайте бажаний відступ зверху */
+        color: white; /* Додайте бажаний колір тексту */
+        text-align: center
+    }
+</style>
+<div class="row" style="display: flex; justify-content: space-between;">
+    <div class="chart-container" style="min-width: 950px; max-height: 400px;">
+        <!-- Другий графік -->
+        <canvas id="MyChart2" style="max-width: 951px; max-height: 400px;"></canvas>
+    </div>
+    <div class="chart-container" style="min-width: 333px; min-height: auto;">
+        <!-- Перший графік -->
+        <canvas id="MyChart1" style="max-width: 350px; max-height: auto;"></canvas>
+        <p class="chart-description">Кількість продажів кожної категорії</p>
+    </div>
 </div>
 
-<div class="chart-container" style="max-width: 1300px; max-height: 400px; margin: 0 auto;">
-    <!-- Другий графік -->
-    <canvas id="MyChart2" style="max-width: 900px; max-height: 400px; float: left;"></canvas>
-</div>
+
 
 
 
@@ -29,7 +49,7 @@
                     <th scope="col">Продукт</th>
                     <th scope="col">Дата замовлення</th>
                     <th scope="col">Кур'єр</th>
-                    <th scope="col">Статус</thscope>
+                    <th scope="col">Статус</th>
                     <!-- Додайте інші заголовки за необхідності -->
                 </tr>
             </thead>
@@ -143,6 +163,7 @@
                     data: {
                         labels: _chartLabels,
                         datasets: [{
+                            label: 'Кількість виручки за день',
                             backgroundColor: barColor,
                             data: _chartData,
                             lineTension: 0.5, // Додаємо параметр lineTension для хвилястості

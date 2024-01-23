@@ -5,17 +5,66 @@
 @inject IAllDishData Carta
 @model Order
 
-@{
-    string imgs = Carta.RetDishImageByName(Model.ProductName);
-}
-@if(Model != null)
+
+@if (Model != null)
 {
-    <h1>COOL!</h1>
+    <h1>Order Details</h1>
+    <table class="table table-bordered">
+        <tr>
+            <th>Order Date</th>
+            <td>@Model.OrderDate</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td>@Model.Category</td>
+        </tr>
+        <tr>
+            <th>Payment Method</th>
+            <td>@Model.PaymentMethod</td>
+        </tr>
+        <tr>
+            <th>Courier</th>
+            <td>@Model.Courier</td>
+        </tr>
+        <tr>
+            <th>Product Name</th>
+            <td>@Model.ProductName</td>
+        </tr>
+        <tr>
+            <th>Shipping Address</th>
+            <td>@Model.ShippingAddress</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>@Model.Status</td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
+            <td>@Model.Quanity</td>
+        </tr>
+        <tr>
+            <th>Total Amount</th>
+            <td>@Model.TotalAmount</td>
+        </tr>
+        <tr>
+            <th>User ID</th>
+            <td>@Model.UserId</td>
+        </tr>
+    </table>
+    <img src="@Carta.RetDishImageByName(Model.ProductName)" class="img-fluid" alt="Product Image" style="max-width: 100%; max-height: 300px;"  />
 }
 else
 {
-    <h2>NOT COOL</h2>
+    <h2>Order not found!</h2>
 }
 
-<img src="@imgs"/>
+<style>
 
+    .table {
+        margin-top: 20px;
+    }
+
+    h1, h2, h3 {
+        color: #007bff;
+    }
+</style>

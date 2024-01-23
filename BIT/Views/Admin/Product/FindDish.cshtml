@@ -3,39 +3,37 @@
 }
 
 
-
-<form action="/Admin/ShowUserData" class="poshuk_form">
-    <label for="IdOrEmail">Id or Email:</label>
-    <input type="text" id="IdOrEmail" name="IdOrEmail" required />
+<form action="/Admin/ShowDishData" class="poshuk_form">
+    <label for="IdOrName">Id or Name:</label>
+    <input type="text" id="IdOrNamel" name="IdOrName" required />
     <button type="button" class="find-btn">Пошук</button>
 
 </form>
 
 
 
-<div id="partial-load"></div>
+<div id="thepartial-load"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
     $(document).ready(function () {
-        var partialLoadContainer = $('#partial-load');
+        var partialLoadContainer = $('#thepartial-load');
 
         // Додано обробник кліку для кнопки "Замовити"
         $(".find-btn").click(function () {
             var form = $(this).closest('form');
-            var IdorEmail = form.find('input[name="IdOrEmail"]').val();
+            var IdorName = form.find('input[name="IdOrName"]').val();
 
             // Вивести часткове представлення замовлення на сторінку
             $.ajax({
                 url: form.attr('action'),
                 type: form.attr('method'),
-                data: { IdOrEmail: IdorEmail },
+                data: { IdOrName: IdorName },
                 success: function (partialView) {
                     partialLoadContainer.html(partialView).fadeIn();
                 }
             });
         });
-        
     });
 </script>

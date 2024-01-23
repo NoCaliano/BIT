@@ -1,0 +1,37 @@
+﻿
+
+.card-img-top {
+    max-height: 300px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.2rem;
+}
+
+.card-text {
+    color: #6c757d;
+}
+
+.order-form,
+.cart-form {
+    margin-top: 10px;
+}
+
+.order-btn,
+.add-to-cart-btn {
+    width: 48%; /* Зменшено ширину кнопок для розміщення в лінію */
+    margin-right: 4px; /* Додано міжмісцевий відступ для відокремлення кнопок */
+}
+
+.order-btn {
+    background-color: #28a745;
+    border: 1px solid #218838; /* Додано обводку для відокремлення від контейнера */
+}
+
+.add-to-cart-btn {
+    background-color: #007bff;
+    border: 1px solid #0056b3; /* Додано обводку для відокремлення від контейнера */
+}
+
+

@@ -12,8 +12,8 @@
 
     /* Стилі для лого */
     #logo {
-        max-width: 50px; /* Максимальна ширина лого */
-        max-height: 50px; /* Максимальна висота лого */
+        max-width: 70px; /* Максимальна ширина лого */
+        max-height: 70px; /* Максимальна висота лого */
         cursor: pointer; /* Додаємо покажчик, щоб показати, що лого є клікабельним */
     }
 
@@ -130,11 +130,11 @@
                     <div id="account-link">
                     Аккаунт
                     <div id="overlay">
-                        <a href="/account/MyOrders">Мої замовлення</a>
-                        <a href="/account/settings">Персональні дані</a>
-                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Home", "Welcome", new { area = "" })">
-                            <button id="logout" type="submit" class="text-white">Logout</button>
-                        </form>
+                        <a href="/Account/MyOrders">Мої замовлення</a>
+                        <a href="/Account/settings">Персональні дані</a>
+                            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
+                                <button id="logout" type="submit">Logout</button>
+                            </form>
                     </div>
                 </div>
                 </li>
@@ -150,11 +150,11 @@
                         <div id="account-link1">
                             Кур'єрство
                             <div id="overlay1">
-                                <a href="/courier/Orders">Доступні замовлення</a>
+                                <a href="/Courier/Orders">Доступні замовлення</a>
                                 @if (User.IsInRole("Courier"))
                                 {
-                                    <a href="/courier/MyDeliveries">Замовлення в процесі</a>
-                                    <a href="/courier/Info">Персональна інформація</a>
+                                    <a href="/Courier/MyDeliveries">Замовлення в процесі</a>
+                                    <a href="/Courier/Info">Персональна інформація</a>
                                 }
                             </div>
                         </div>
@@ -171,7 +171,7 @@
                 </li>
             }
             <li>
-                <a href="/category">Категорії</a>
+                <a href="/Category">Категорії</a>
             </li>
             
         </ul>

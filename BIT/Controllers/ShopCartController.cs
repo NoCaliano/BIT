@@ -226,19 +226,19 @@ namespace BIT.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Confirm(CartDetailsViewModel d)
-        {   
-            
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (ModelState.IsValid)
             {
                 var cart = await _context.Carts
                     .Include(c => c.CartItems)
                     .ThenInclude(ci => ci.Dish)
-                    .FirstOrDefaultAsync(c => c.Id == d.CartId && c.UserId == _userManager.GetUserId(User)); // важлива штука, тепер не можна через код елементу приколи вводити
+                    .FirstOrDefaultAsync(c => c.Id == d.CartId && c.UserId == userId); 
 
                 var orderDate = DateTime.Now;
 
                 string NameOfUser = "Guest";
-                var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                var user = await _userManager.FindByIdAsync(userId);
                 if (user.FirstName != null) { NameOfUser = user.FirstName; }
 
                 if (cart != null)

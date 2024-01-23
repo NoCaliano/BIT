@@ -1,10 +1,36 @@
-﻿@model List<Order>
-
-@if(Model != null)
+﻿@using BIT.Interfaces
+@using BIT.DataStuff
+@model List<Order>
+@inject IAllDishData Carta
+@if (Model != null && Model.Any())
 {
-    <h2>@Model.Count();</h2>
+    <h2>Total Orders: @Model.Count()</h2>
+
+    @foreach (var order in Model)
+    {
+        <div>
+            <h3>Order Details</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Order Date</th>
+                    <td>@order.OrderDate</td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>@order.Category</td>
+                </tr>
+                <tr>
+                    <th>Payment Method</th>
+                    <td>@order.PaymentMethod</td>
+                </tr>
+                <!-- Додайте інші рядки таблиці відповідно до вашого Order моделі -->
+            </table>
+            <img src="@Carta.RetDishImageByName(order.ProductName)" class="img-fluid" alt="Product Image" style="max-width: 100%; max-height: 400px;" />
+        </div>
+        <hr /> <!-- Додайте горизонтальну лінію між табличками для розділення їх -->
+    }
 }
 else
 {
-    <h2>Not Good</h2>
+    <h2>No Orders Found</h2>
 }

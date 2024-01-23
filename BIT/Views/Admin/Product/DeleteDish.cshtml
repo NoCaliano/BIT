@@ -1,19 +1,20 @@
-﻿@model List<BIT.Models.Dish>
-@using BIT.DataStuff;
-@using BIT.Interfaces;
+﻿@using BIT.Interfaces;
 @inject IAllDishes DishBase;
 @{
     Layout = "_LayoutAdmin";
 }
 @foreach (var dish in DishBase.Dishes)
 {
-    <div>
-        <!-- Показати дані рядка -->
-        <span>@dish.Name</span>
-        <!-- Додати кнопку для видалення -->
-        <form asp-action="Delete" method="post">
-            <input type="hidden" name="id" value="@dish.Id" />
-            <button type="submit">Видалити</button>
-        </form>
+    <div class="col-3 mb-4">
+        <div class="card">
+            <img src="@dish.Img" class="card-img-top" alt="Dish Image" style="max-height: 100px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title">@dish.Name</h5>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@dish.Id" />
+                    <button type="submit" class="btn btn-danger">Видалити</button>
+                </form>
+            </div>
+        </div>
     </div>
 }

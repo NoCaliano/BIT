@@ -51,9 +51,12 @@
 
     <h1>Відгуки клієнтів</h1>
 
-    <div id="feedbackContainer">
-        <!-- Тут буде відображене часткове представлення -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div id="feedbackContainer">
+            <!-- Тут буде відображене часткове представлення -->
     </div>
+    }
 
     @foreach (var feedback in Model)
     {

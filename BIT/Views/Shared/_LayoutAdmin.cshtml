@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/site.css">
+    <link rel="icon" href="~/favicon.ico" asp-append-version="true" />
     <title>@ViewBag.Title</title>
     <style>
         body {
@@ -15,7 +16,7 @@
 
         .container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh; /* Змінив height на min-height */
         }
 
         .sidebar {
@@ -122,13 +123,12 @@
 <body>
     <header>
         <nav class="navbar">
-            <div class="navbar-brand">
-                <a href="@Url.Action("Index", "Home")">Лого</a>
-            </div>
+            <a href="/Home/index">
+                <img src="https://img.freepik.com/premium-vector/burger-logo-icon_567288-500.jpg" alt="Your Logo" id="logo" style="max-height: 35px; max-width: auto">
+            </a>
             <ul class="navbar-nav">
-                <li class="nav-item"><a href="#">🔔</a></li>
                 <li class="nav-item">
-                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Login">
                         <button id="logout" type="submit">Logout</button>
                     </form>
                 </li>
@@ -142,6 +142,7 @@
                     Товари
                     <ul class="sub-menu">
                         <li><a href="@Url.Action("AddDish", "Admin")">Додати товар</a></li>
+                        <li><a href="@Url.Action("FindDish", "Admin")">Знайти товар</a></li>
                         <li><a href="@Url.Action("EditDish", "Admin")">Редагувати товар</a></li>
                         <li><a href="@Url.Action("DeleteDish", "Admin")">Видалити товар</a></li>
                         <li><a href="@Url.Action("AddCategory", "Admin")">Додати категорію</a></li>                        

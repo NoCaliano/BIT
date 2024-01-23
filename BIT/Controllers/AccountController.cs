@@ -77,20 +77,31 @@ namespace BIT.Controllers
             if (settings.Email != null)
             {
                 var user = await _userManager.FindByIdAsync(userId);
-                var Token = await _userManager.GenerateChangeEmailTokenAsync(user, settings.Email);
+
                 if (user == null)
                 {
                     return NotFound();
                 }
-                await _userManager.ChangeEmailAsync(user, settings.Email, Token);
+
+                var emailExists = await _userManager.FindByEmailAsync(settings.Email);
+                if (emailExists != null && emailExists.Id != userId)
+                {
+                    ModelState.AddModelError("Email", "Цей емейл вже зайнятий.");
+                    return View("Settings", settings); 
+                }
+
+                var token = await _userManager.GenerateChangeEmailTokenAsync(user, settings.Email);
+
+                await _userManager.ChangeEmailAsync(user, settings.Email, token);
                 await _userManager.SetUserNameAsync(user, settings.Email);
                 await _userManager.UpdateAsync(user);
 
                 return RedirectToAction("Settings", "Account");
             }
+
             return NotFound();
-            
         }
+
 
 
         [HttpPost]

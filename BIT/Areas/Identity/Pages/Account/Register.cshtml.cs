@@ -160,7 +160,7 @@ namespace BIT.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    if (Input.FirstName != null && Input.LastName != null)
+                    if (Input.IsExtendedRegistration && ModelState.IsValid)
                     {
                         user.FirstName = Input.FirstName;
                         user.LastName = Input.LastName;

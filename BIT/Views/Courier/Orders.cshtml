@@ -1,108 +1,120 @@
 ﻿@model List<Order>
+@using BIT.Interfaces
+@inject IAllDishData Data
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Доступні замовлення</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    .hidden {
+        display: none;
+    }
 
-        h2 {
+    .details {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+        .details p {
+            margin: 5px 0;
+            font-size: 16px;
             color: #333;
-            text-align: center;
-            margin-top: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 2px solid #ddd; /* Товщина та колір рамки */
+    }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
+    th, td {
+        border: 1px solid #ddd; /* Товщина та колір рамки для заголовків і комірок */
+        padding: 8px;
+        text-align: left;
+    }
 
-        th {
-            background-color: #f2f2f2;
-        }
+    th {
+        background-color: #f2f2f2; /* Колір фону заголовків */
+    }
+</style>
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        tr:hover {
-            background-color: #f0f0f0;
-        }
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Доступні замовлення</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Продукт</th>
+                        <th scope="col">Сума</th>                        
+                        <th scope="col">Адреса</th>
+                        <th scope="col">Телефон</th>
+                        <th scope="col">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>#@order.Id</td>
+                            <td>
+                                <img src="@Data.RetDishImageByName(order.ProductName)" style="max-height: 40px; max-width: 40px"> @order.ProductName
+                            </td>
+                            <td>@order.TotalAmount ₴</td>
+                            <td>@order.ShippingAddress</td>
+                            <td>@order.Phonenumber</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if (User.IsInRole("Courier"))
+                                    {
+                                        @if (order.Status == OrderStatus.New)
+                                        {
+                                            <form asp-action="TakeOrder" asp-controller="Courier" method="post" class="mb-0">
+                                                <input type="hidden" name="ordId" value="@order.Id" />
+                                                <button type="submit" class="btn btn-success me-2">Прийняти замовлення</button>
+                                            </form>
+                                        }
 
-        form {
-            display: inline-block;
-        }
+                                    }
+                                    <button class="btn btn-info details-toggle" data-order-id="@order.Id">
+                                        Розгорнути
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="details collapse" id="details-@order.Id">
+                            <td colspan="7">
+                                <!-- Відомості про замовлення, які можна розгорнути -->
+                                <div class="details">
+                                    <h2>Додаткові відомості</h2>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Коментар:</strong>@order.Notes</p>
+                                            <p><strong>Кількість:</strong> @order.Quanity</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Ім'я клієнта:</strong> @order.CustomerName</p>
+                                            <p><strong>Спосіб оплати:</strong> @order.PaymentMethod</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-        button {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            margin: 2px 2px;
-            cursor: pointer;
-        }
-
-            button:hover {
-                background-color: #45a049;
-            }
-    </style>
-</head>
-<body>
-    <h2>Доступні замовлення</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Страва</th>
-                <th>Кількість</th>
-                <th>Клієнт</th>
-                <th>Дата</th>
-                <th>Адреса</th>
-                <th>Дії</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model)
-            {
-                <tr>
-                    <td>@order.ProductName</td>
-                    <td>@order.Quanity</td>
-                    <td>@order.CustomerName</td>
-                    <td>@order.OrderDate</td>
-                    <td>@order.ShippingAddress</td>
-                    <!-- Додайте інші стовпці за потребою -->
-                    <td>
-                        @if (order.Status == OrderStatus.New)
-                        {
-                            <form asp-action="TakeOrder" asp-controller="Courier" method="post">
-                                <input type="hidden" name="ordId" value="@order.Id" />
-                                <button type="submit">Прийняти замовлення</button>
-                            </form>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</body>
-</html>
-
+<script>
+    $(document).ready(function () {
+        $('.details-toggle').on('click', function () {
+            var orderId = $(this).data('order-id');
+            $('#details-' + orderId).toggleClass('collapse');
+        });
+    });
+</script>
 

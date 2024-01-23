@@ -13,7 +13,7 @@
     /* Стилі для зображення товару */
     .dish-image {
         max-width: 100px; /* Максимальна ширина зображення */
-        max-height: 100px; /* Максимальна висота зображення */
+        max-height: 70px; /* Максимальна висота зображення */
         margin-bottom: 5px;
     }
 
@@ -48,7 +48,7 @@
 
 @if (Model != null && Model.CartItems.Count() > 0)
 {
-    <div>
+    <div class="cartContent">
         @foreach (var cartItem in Model.CartItems)
         {
             <div class="cart-item">
@@ -76,7 +76,7 @@
         </form>
     </div>
 
-    <p class="grand-total">Загальна сума замовлення: @Model.GrandTotal</p>
+    <p class="grand-total">Загальна сума: @Model.GrandTotal</p>
 
 }
 else

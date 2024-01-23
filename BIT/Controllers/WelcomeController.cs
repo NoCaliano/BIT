@@ -54,7 +54,7 @@ namespace BIT.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("FeedBacks", "Welcome");
             }
-            return RedirectToAction("FAQ", "Welcome");
+            return PartialView("_FeedBackForm", model);
         }
     }
 }

@@ -1,10 +1,45 @@
 ﻿@model PaginatedList<Dish>
 
-
 <link rel="stylesheet" href="~/css/Partial.css" asp-append-version="true" />
-<button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
+<link rel="stylesheet" href="~/css/card.css" asp-append-version="true" />
 
-<div class="container">
+<button id="showCartBtn" class="btn btn-info mt-4">🛒</button>
+<style>
+    @@keyframes bounceIn {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-30px);
+        }
+
+        60% {
+            transform: translateY(-15px);
+        }
+    }
+
+    /* Додайте клас анімації до кнопки корзини при натисканні на кнопку "Додати в корзину" */
+    .animate-cart-btn {
+        animation: bounceIn 1s;
+    }
+
+    .card {
+        transition: transform 0.3s;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+</style>
+<div class="container mt-4">
     <div class="row">
         @foreach (var dish in Model)
         {
@@ -15,17 +50,16 @@
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">@dish.Name</h5>
-                        <p class="card-text">Ціна: @dish.Price</p>
+                        <p class="card-text">Ціна: @dish.Price ₴</p>
 
                         <form asp-controller="Order" asp-action="PartTest" class="order-form">
                             <input type="hidden" name="dishId" value="@dish.Id" />
                             <button type="button" class="btn btn-success order-btn">Замовити</button>
                         </form>
 
-
-                        <form asp-controller="ShopCart" asp-action="AddToListOfCartItems">
+                        <form asp-controller="ShopCart" asp-action="AddToListOfCartItems" class="cart-form">
                             <input type="hidden" name="dishId" value="@dish.Id" />
-                            <button type="submit" class="btn btn-success">Додати в корзину</button>
+                            <button type="submit" class="btn btn-success add-to-cart-btn">Додати в корзину</button>
                         </form>
                     </div>
                 </div>
@@ -33,27 +67,25 @@
         }
     </div>
 
-
     <div id="cartContainer">
         <!-- Вміст часткового представлення корзини буде тут -->
     </div>
 
-    
     @{
         var PrevDisabled = !Model.PreviousPage ? "disabled" : "";
         var NextDisabled = !Model.NextPage ? "disabled" : "";
     }
 
-    <a asp-action="index" asp-route-pageNumber="@(Model.PageIndex-1)"
-       class="btn btn-default @PrevDisabled">
-        Previous
-    </a>
-
-    <a asp-action="index" asp-route-pageNumber="@(Model.PageIndex+1)"
-       class="btn btn-default @NextDisabled">
-        Next
-    </a>
-
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @PrevDisabled">
+                <a class="page-link" asp-action="index" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+            </li>
+            <li class="page-item @NextDisabled">
+                <a class="page-link" asp-action="index" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 
@@ -179,3 +211,17 @@
     }
 </script>
 
+<script>
+    $(document).ready(function () {
+        $('.add-to-cart-btn').on('click', function () {
+            // Знаходження кнопки "Додати в корзину" та додавання класу для анімації
+            $('#showCartBtn').addClass('animate-cart-btn');
+
+            // Затримка для відображення анімації, наприклад, 1 секунда
+            setTimeout(function () {
+                // Зняття класу анімації після затримки
+                $('#showCartBtn').removeClass('animate-cart-btn');
+            }, 1000); // Затримка у мілісекундах
+        });
+    });
+</script>

@@ -4,6 +4,7 @@ using BIT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using System.Collections.Specialized;
 using System.Security.Claims;
@@ -32,22 +33,33 @@ namespace BIT.Controllers
             return View(orders);
         }
 
-        public IActionResult MyDeliveries()
+        public async Task<IActionResult> MyDeliveries()
         {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Orders", "Courier");
+            }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
+            var cour = await _context.Couriers.FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cour != null)
             {
-                var orders = _context.Orders.Where(o => o.CourId == cour.Id.ToString()).ToList();
+                var orders = await _context.Orders
+                    .Where(o => o.CourId == cour.Id.ToString() && o.Status != OrderStatus.Canceled && o.Status != OrderStatus.Delivered)
+                    .ToListAsync();
 
                 return View(orders);
             }
+
             return NotFound();
         }
 
         public IActionResult Info()
         {
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Orders", "Courier");
+            }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cour = _context.Couriers.FirstOrDefault(c => c.UserId == userId);
             return View(cour);
